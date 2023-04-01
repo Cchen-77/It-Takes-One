@@ -21,6 +21,7 @@ void AIMCharacter::BeginPlay()
 	auto CMC = GetCharacterMovement();
 	check(CMC);
 	CMC->SetDefaultMovementMode();
+	bCanSendSoul = true;
 }
 void AIMCharacter::Tick(float DeltaTime)
 {
@@ -83,7 +84,9 @@ void AIMCharacter::Restart()
 }
 void AIMCharacter::SendSoul()
 {
+	if (!bCanSendSoul) return;
 	if (SoulClass) {
+		bCanSendSoul = false;
 		auto CMC = GetCharacterMovement();
 		check(CMC);
 		SetSavedState(GetVelocity(), CMC->IsFalling());

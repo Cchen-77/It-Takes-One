@@ -35,6 +35,7 @@ protected:
 		TSubclassOf<AIMSoul> SoulClass;
 	void SendSoul();
 	void Move(const FInputActionValue& value);
+	bool bCanSendSoul = true;
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = Input)
 		UInputMappingContext* IMC_Body;
