@@ -35,9 +35,7 @@ void USoulRNRComponent::AfterRecord()
 }
 void USoulRNRComponent::ReplayingFinish()
 {
-	auto IMPC = Cast<AIMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	check(IMPC);
-	IMPC->SetRNRState(ERNRState::STATE_None);
+	SetRNRState(ERNRState::STATE_None);
 	GetOwner()->Destroy();
 }
 void USoulRNRComponent::DoReplaying(float DeltaTime)

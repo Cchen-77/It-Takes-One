@@ -21,11 +21,10 @@ void AIMCharacter::BeginPlay()
 	auto CMC = GetCharacterMovement();
 	check(CMC);
 	CMC->SetDefaultMovementMode();
-	bCanSendSoul = true;
+	bCanSendSoul = true;	
 }
 void AIMCharacter::Tick(float DeltaTime)
 {
-	UE_LOG(LogTemp, Warning, TEXT("2"));
 	Super::Tick(DeltaTime);
 	float XVelocity = GetVelocity().X;
 	if (bFacingRight && XVelocity < 0) {
@@ -94,8 +93,6 @@ void AIMCharacter::SendSoul()
 		MySoul->SetBody(this);
 		auto IMPC = Cast<AIMPlayerController>(GetController());
 		check(IMPC);
-		//flip to Recording state.
-		IMPC->SetRNRState(ERNRState::STATE_Recording);
 		MySoul->FinishSpawning(GetActorTransform());
 		IMPC->Possess(MySoul);
 	}	
@@ -131,9 +128,5 @@ bool AIMCharacter::IsRealFalling_Implementation()
 }
 void AIMCharacter::OnSoulBack()
 {
-	auto IMPC = Cast<AIMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	check(IMPC);
-	//flip to ReplayingState
-	IMPC->SetRNRState(ERNRState::STATE_Replaying);
 	PrepSavedState();
 }

@@ -4,23 +4,27 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include"Items/ImBaseItem.h"
 #include "IMBaseDoor.generated.h"
 
 UCLASS()
-class IMAGINE_API AIMBaseDoor : public AActor
+class IMAGINE_API AIMBaseDoor : public AIMBaseItem
 {
 	GENERATED_BODY()
 	
-public:	
-	// Sets default values for this actor's properties
+public:
 	AIMBaseDoor();
-
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+protected:
+	bool bIsOpen;
+	void PlayerEnter();
+public:
+	void UpdateOpeningState(bool IsOpen);
+	uint8 GetDoorID();
+protected:
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = Door)
+	uint8 DoorID = 0;
 };

@@ -35,8 +35,6 @@ protected:
 
 public:
 	URecordNReplayManager* GetRecordNReplayManager() const;
-	ERNRState GetRNRState() const;
-	void SetRNRState(ERNRState State);
 protected:
 	UPROPERTY()
 		URecordNReplayManager* RecordNReplayManager;

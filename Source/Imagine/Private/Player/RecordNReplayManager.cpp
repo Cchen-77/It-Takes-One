@@ -2,13 +2,3 @@
 
 
 #include "Player/RecordNReplayManager.h"
-
-void URecordNReplayManager::SetRNRState(ERNRState State)
-{
-	RNRState = State;
-}
-
-ERNRState URecordNReplayManager::GetRNRState() const
-{
-	return RNRState;
-}

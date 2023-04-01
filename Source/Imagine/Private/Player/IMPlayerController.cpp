@@ -53,14 +53,5 @@ URecordNReplayManager* AIMPlayerController::GetRecordNReplayManager() const
 	return RecordNReplayManager;
 }
 
-ERNRState AIMPlayerController::GetRNRState() const
-{
-	return RecordNReplayManager->GetRNRState();
-}
-
-void AIMPlayerController::SetRNRState(ERNRState State)
-{
-	return RecordNReplayManager->SetRNRState(State);
-}
 
 

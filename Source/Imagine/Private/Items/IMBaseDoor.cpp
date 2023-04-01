@@ -2,26 +2,45 @@
 
 
 #include "Items/IMBaseDoor.h"
-
-// Sets default values
+#include"Components/BoxComponent.h"
+#include"PaperFlipbookComponent.h"
+#include"PaperZDAnimationComponent.h"
+#include"Player/IMCharacter.h"
+#include"Debug/MyDebug.h"
 AIMBaseDoor::AIMBaseDoor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
-// Called when the game starts or when spawned
 void AIMBaseDoor::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
-
-// Called every frame
 void AIMBaseDoor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (bIsOpen) {
+		TArray<AActor*> OverlappingActors;
+		Collision->GetOverlappingActors(OverlappingActors, AIMCharacter::StaticClass());
+		if (!OverlappingActors.IsEmpty()) {
+			PlayerEnter();
+		}
+	}
+	bIsOpen = true;
+}
+void AIMBaseDoor::PlayerEnter()
+{
+	UMyDebug::Message("Enter!");
+}
 
+uint8 AIMBaseDoor::GetDoorID()
+{
+	return DoorID;
+}
+
+void AIMBaseDoor::UpdateOpeningState(bool IsOpen)
+{
+	bIsOpen &= IsOpen;
 }
 
