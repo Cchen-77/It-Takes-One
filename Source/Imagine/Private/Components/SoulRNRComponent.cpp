@@ -4,7 +4,6 @@
 #include "Components/SoulRNRComponent.h"
 #include"Player/IMPlayerController.h"
 #include"Player/IMSoul.h"
-#include"Player/RecordNReplayManager.h"
 #include"Kismet/GameplayStatics.h"
 #include"Kismet/KismetMathLibrary.h"
 #include"GameFramework/CharacterMovementComponent.h"
@@ -35,9 +34,7 @@ void USoulRNRComponent::AfterRecord()
 }
 void USoulRNRComponent::ReplayingFinish()
 {
-	auto IMPC = Cast<AIMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	check(IMPC);
-	IMPC->SetRNRState(ERNRState::STATE_None);
+	SetRNRState(ERNRState::STATE_None);
 	GetOwner()->Destroy();
 }
 void USoulRNRComponent::DoReplaying(float DeltaTime)

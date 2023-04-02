@@ -3,7 +3,6 @@
 
 #include "Components/RecordNReplayComponent.h"
 #include"Player/IMPlayerController.h"
-#include"Player/RecordNReplayManager.h"
 #include"Kismet/GameplayStatics.h"
 // Sets default values for this component's properties
 URecordNReplayComponent::URecordNReplayComponent()
@@ -21,7 +20,7 @@ void URecordNReplayComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 	auto IMPC = Cast<AIMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	check(IMPC);
-	switch (IMPC->GetRNRState()) {
+	switch (GetRNRState()) {
 		case ERNRState::STATE_None:
 			break;
 		case ERNRState::STATE_Recording:
@@ -40,5 +39,15 @@ void URecordNReplayComponent::DoRecording(float DeltaTime)
 void URecordNReplayComponent::DoReplaying(float DeltaTime)
 {
 
+}
+
+ERNRState URecordNReplayComponent::GetRNRState() const
+{
+	return RNRState;
+}
+
+void URecordNReplayComponent::SetRNRState(ERNRState State)
+{
+	RNRState = State;
 }
 

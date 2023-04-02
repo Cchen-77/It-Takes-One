@@ -4,7 +4,6 @@
 #include "Player/IMCharacter.h"
 #include"Player/IMSoul.h"
 #include"Player/IMPlayerController.h"
-#include"Player/RecordNReplayManager.h"
 #include"EnhancedInputSubsystems.h"
 #include"EnhancedInputComponent.h"
 #include"Kismet/KismetMathLibrary.h"
@@ -21,11 +20,10 @@ void AIMCharacter::BeginPlay()
 	auto CMC = GetCharacterMovement();
 	check(CMC);
 	CMC->SetDefaultMovementMode();
-	bCanSendSoul = true;
+	bCanSendSoul = true;	
 }
 void AIMCharacter::Tick(float DeltaTime)
 {
-	UE_LOG(LogTemp, Warning, TEXT("2"));
 	Super::Tick(DeltaTime);
 	float XVelocity = GetVelocity().X;
 	if (bFacingRight && XVelocity < 0) {
@@ -51,7 +49,6 @@ void AIMCharacter::PossessedBy(AController* NewController)
 {
 	auto CMC = GetCharacterMovement();
 	Super::PossessedBy(NewController);
-	CustomTimeDilation = 1;
 	if (auto PC = Cast<APlayerController>(NewController)) {
 		if (auto EISubsys = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer())) {
 			if (IMC_Body) {
@@ -69,7 +66,6 @@ void AIMCharacter::UnPossessed()
 			}
 		}
 	}
-	CustomTimeDilation = 0;
 	Super::UnPossessed();
 }
 
@@ -86,7 +82,9 @@ void AIMCharacter::SendSoul()
 {
 	if (!bCanSendSoul) return;
 	if (SoulClass) {
-		bCanSendSoul = false;
+		CustomTimeDilation = 0;
+		OnPause.Broadcast();
+		//bCanSendSoul = false;
 		auto CMC = GetCharacterMovement();
 		check(CMC);
 		SetSavedState(GetVelocity(), CMC->IsFalling());
@@ -94,8 +92,6 @@ void AIMCharacter::SendSoul()
 		MySoul->SetBody(this);
 		auto IMPC = Cast<AIMPlayerController>(GetController());
 		check(IMPC);
-		//flip to Recording state.
-		IMPC->SetRNRState(ERNRState::STATE_Recording);
 		MySoul->FinishSpawning(GetActorTransform());
 		IMPC->Possess(MySoul);
 	}	
@@ -129,11 +125,11 @@ bool AIMCharacter::IsRealFalling_Implementation()
 	check(CMC);
 	return CMC->IsFalling();
 }
-void AIMCharacter::OnSoulBack()
+void AIMCharacter::OnSoulBack(AIMSoul* Soul)
 {
-	auto IMPC = Cast<AIMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	check(IMPC);
-	//flip to ReplayingState
-	IMPC->SetRNRState(ERNRState::STATE_Replaying);
+	CustomTimeDilation = 1;
+	OnUnPause.Broadcast();
+	OnPause.AddUObject(Soul, &AIMSoul::Pause);
+	OnUnPause.AddUObject(Soul, &AIMSoul::UnPause);
 	PrepSavedState();
 }

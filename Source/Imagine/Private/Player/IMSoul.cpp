@@ -4,7 +4,6 @@
 #include "Player/IMSoul.h"
 #include"Player/IMCharacter.h"
 #include"Player/IMPlayerController.h"
-#include"Player/RecordNReplayManager.h"
 #include"Components/SoulRNRComponent.h"
 #include"GameFramework/CharacterMovementComponent.h"
 #include"Kismet/GameplayStatics.h"
@@ -21,6 +20,8 @@ void AIMSoul::BeginPlay()
 	Super::BeginPlay();
 	ActionBuffer = ActionBufferCache = 0;
 	After_bWantsToSoulBack = 0;
+	//BeginPlay with RecordingMode.
+	RecordNReplayComponent->SetRNRState(ERNRState::STATE_Recording);
 }
 void AIMSoul::Tick(float DeltaTime)
 {
@@ -37,7 +38,7 @@ void AIMSoul::Tick(float DeltaTime)
 	//replaying time has its only actionhandle.
 	auto IMPC = Cast<AIMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	check(IMPC);
-	if (ERNRState::STATE_Replaying != IMPC->GetRNRState()) {
+	if (ERNRState::STATE_Replaying != RecordNReplayComponent->GetRNRState()) {
 		ActionBufferCache = ActionBuffer;
 		StartAction();
 	}
@@ -79,15 +80,11 @@ void AIMSoul::StartAction()
 }
 void AIMSoul::ActionSwap()
 {
-	auto IMPC = Cast<AIMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	check(IMPC);
-	if (ERNRState::STATE_Replaying == IMPC->GetRNRState()) {	
+	if (ERNRState::STATE_Replaying == RecordNReplayComponent->GetRNRState()) {
 		Body->SetActorTransform(GetActorTransform());
 		auto BodyCMC = Body->GetCharacterMovement();
 		BodyCMC->Velocity = Execute_GetRealVelocity(this);
 		BodyCMC->SetMovementMode(Execute_IsRealFalling(this) ? EMovementMode::MOVE_Falling : EMovementMode::MOVE_Walking);
-		IMPC->SetRNRState(ERNRState::STATE_None);
-		Destroy();
 	}
 	else {
 		SoulBack();
@@ -108,15 +105,13 @@ void AIMSoul::After_SoulBack()
 		auto IMPC = Cast<AIMPlayerController>(GetController());
 		check(IMPC);
 		IMPC->Possess(Body);
-		Body->OnSoulBack();
+		RecordNReplayComponent->SetRNRState(ERNRState::STATE_Replaying);
+		Body->OnSoulBack(this);
 	}
 }
 FVector AIMSoul::GetRealVelocity_Implementation()
 {
-	auto IMPC = Cast<AIMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0));
-	check(IMPC);
-	ERNRState RNRState = IMPC->GetRNRState();
-	if (RNRState == ERNRState::STATE_Replaying) {
+	if (RecordNReplayComponent->GetRNRState() == ERNRState::STATE_Replaying) {
 		return Replaying_Velocity;
 	}
 	else {
@@ -125,10 +120,7 @@ FVector AIMSoul::GetRealVelocity_Implementation()
 }
 bool AIMSoul::IsRealFalling_Implementation()
 {
-	auto IMPC = Cast<AIMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	check(IMPC);
-	ERNRState RNRState = IMPC->GetRNRState();
-	if (RNRState == ERNRState::STATE_Replaying) {
+	if (RecordNReplayComponent->GetRNRState() == ERNRState::STATE_Replaying) {
 		return Replaying_bIsFalling;
 	}
 	else {
@@ -136,6 +128,14 @@ bool AIMSoul::IsRealFalling_Implementation()
 		check(CMC);
 		return CMC->IsFalling();
 	}
+}
+void AIMSoul::Pause()
+{
+	CustomTimeDilation = 0;
+}
+void AIMSoul::UnPause()
+{
+	CustomTimeDilation = 1;
 }
 void AIMSoul::PossessedBy(AController* NewController)
 {

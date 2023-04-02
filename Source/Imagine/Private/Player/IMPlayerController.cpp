@@ -2,7 +2,7 @@
 
 
 #include "Player/IMPlayerController.h"
-#include"Player/RecordNReplayManager.h"
+#include"Items/IMBaseItem.h"
 #include"Camera/CameraActor.h"
 AIMPlayerController::AIMPlayerController()
 {
@@ -24,8 +24,6 @@ void AIMPlayerController::Tick(float DeltaTime)
 void AIMPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	RecordNReplayManager = NewObject<URecordNReplayManager>(GetOuter());
-	check(RecordNReplayManager);
 	IMCamera = GetWorld()->SpawnActor<ACameraActor>(ACameraActor::StaticClass(), FVector(0, CameraDistance, 0), FRotator(0, -90, 0));
 	SetViewTarget(IMCamera);
 }
@@ -48,19 +46,20 @@ void AIMPlayerController::CameraBlendTo(FVector Location, float DeltaTime)
 	IMCamera->SetActorLocation(DstLocation);
 }
 
-URecordNReplayManager* AIMPlayerController::GetRecordNReplayManager() const
+void AIMPlayerController::SaveRNRItemsState()
 {
-	return RecordNReplayManager;
+	OnSaveRNRItemsState.Broadcast();
+}
+void AIMPlayerController::PrepRNRItemsState()
+{
+	OnPrepRNRItemsState.Broadcast();
 }
 
-ERNRState AIMPlayerController::GetRNRState() const
+void AIMPlayerController::RNRItemRegister(AIMBaseItem* Item)
 {
-	return RecordNReplayManager->GetRNRState();
+	OnSaveRNRItemsState.AddUObject(Item, &AIMBaseItem::SaveRNRItemState);
+	OnPrepRNRItemsState.AddUObject(Item, &AIMBaseItem::PrepRNRItemState);
 }
 
-void AIMPlayerController::SetRNRState(ERNRState State)
-{
-	return RecordNReplayManager->SetRNRState(State);
-}
 
 
