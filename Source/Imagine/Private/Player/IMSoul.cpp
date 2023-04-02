@@ -4,7 +4,6 @@
 #include "Player/IMSoul.h"
 #include"Player/IMCharacter.h"
 #include"Player/IMPlayerController.h"
-#include"Player/RecordNReplayManager.h"
 #include"Components/SoulRNRComponent.h"
 #include"GameFramework/CharacterMovementComponent.h"
 #include"Kismet/GameplayStatics.h"
@@ -107,7 +106,7 @@ void AIMSoul::After_SoulBack()
 		check(IMPC);
 		IMPC->Possess(Body);
 		RecordNReplayComponent->SetRNRState(ERNRState::STATE_Replaying);
-		Body->OnSoulBack();
+		Body->OnSoulBack(this);
 	}
 }
 FVector AIMSoul::GetRealVelocity_Implementation()
@@ -129,6 +128,14 @@ bool AIMSoul::IsRealFalling_Implementation()
 		check(CMC);
 		return CMC->IsFalling();
 	}
+}
+void AIMSoul::Pause()
+{
+	CustomTimeDilation = 0;
+}
+void AIMSoul::UnPause()
+{
+	CustomTimeDilation = 1;
 }
 void AIMSoul::PossessedBy(AController* NewController)
 {

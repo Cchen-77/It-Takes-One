@@ -12,6 +12,8 @@
 /**
  * 
  */
+DECLARE_MULTICAST_DELEGATE(FOnPauseSignature);
+DECLARE_MULTICAST_DELEGATE(FOnUnPauseSignature);
 class AIMSoul;
 class UInputMappingContext;
 class UInputAction;
@@ -29,7 +31,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 public:
-	void OnSoulBack();
+	void OnSoulBack(AIMSoul* Soul);
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = Soul)
 		TSubclassOf<AIMSoul> SoulClass;
@@ -55,4 +57,7 @@ public:
 public:
 	virtual FVector GetRealVelocity_Implementation();
 	virtual bool IsRealFalling_Implementation();
+protected:
+	FOnPauseSignature OnPause;
+	FOnUnPauseSignature OnUnPause;
 };

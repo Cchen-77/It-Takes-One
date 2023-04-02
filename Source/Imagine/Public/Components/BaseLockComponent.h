@@ -3,26 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/BaseLockComponent.h"
-#include "ButtonLockComponent.generated.h"
+#include "Components/ActorComponent.h"
+#include "BaseLockComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class IMAGINE_API UButtonLockComponent : public UBaseLockComponent
+class IMAGINE_API UBaseLockComponent : public UActorComponent
 {
 	GENERATED_BODY()
-
 public:	
-	UButtonLockComponent();
+	UBaseLockComponent();
 protected:
 	virtual void BeginPlay() override;
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	void OpenFor(float Time);
-	virtual void SaveState() override;
-	virtual void PrepState() override;
-protected:
-	float OpeningTime = 0;
-	float Saved_OpeningTime = 0;
-
+	virtual void SaveState();
+	virtual void PrepState();
 };

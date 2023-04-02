@@ -24,4 +24,5 @@ protected:
 	uint32 LockID = 0;
 	UPROPERTY(EditDefaultsOnly, Category = Lock)
 		float OpenTime = 3;
+
 };

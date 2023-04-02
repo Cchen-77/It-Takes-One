@@ -79,4 +79,8 @@ public:
 	virtual bool IsRealFalling_Implementation();
 protected:
 	bool bIsFacingRight = true;
+public:
+	//Soul in Replaying incounter another recording start.is no need to Save state since it's state triggered.
+	void Pause();
+	void UnPause();
 };

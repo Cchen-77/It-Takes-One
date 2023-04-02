@@ -3,6 +3,8 @@
 #include"Components/BoxComponent.h"
 #include"PaperFlipbookComponent.h"
 #include"PaperZDAnimationComponent.h"
+#include"Player/IMPlayerController.h"
+#include"Kismet/GameplayStatics.h"
 #include"Debug/MyDebug.h"
 AIMBaseItem::AIMBaseItem()
 {
@@ -21,6 +23,9 @@ void AIMBaseItem::BeginPlay()
 {
 	Super::BeginPlay();
 	Collision->OnComponentBeginOverlap.AddDynamic(this, &AIMBaseItem::Trigger);
+	auto IMPC = Cast<AIMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	check(IMPC);
+	IMPC->RNRItemRegister(this);
 }
 
 void AIMBaseItem::Tick(float DeltaTime)
@@ -32,6 +37,14 @@ void AIMBaseItem::Trigger(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
+}
+
+void AIMBaseItem::SaveRNRItemState()
+{
+
+}
+void AIMBaseItem::PrepRNRItemState()
+{
 }
 
 

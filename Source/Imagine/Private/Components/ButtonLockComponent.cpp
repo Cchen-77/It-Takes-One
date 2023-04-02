@@ -27,9 +27,20 @@ void UButtonLockComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	check(Door);
 	Door->UpdateOpeningState(OpeningTime != 0);
 }
-
 void UButtonLockComponent::OpenFor(float Time)
 {
 	OpeningTime += Time;
+}
+
+void UButtonLockComponent::SaveState()
+{
+	Super::SaveState();
+	Saved_OpeningTime = OpeningTime;
+}
+
+void UButtonLockComponent::PrepState()
+{
+	Super::PrepState();
+	OpeningTime = Saved_OpeningTime;
 }
 

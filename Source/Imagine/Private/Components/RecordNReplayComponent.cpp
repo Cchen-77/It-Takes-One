@@ -3,7 +3,6 @@
 
 #include "Components/RecordNReplayComponent.h"
 #include"Player/IMPlayerController.h"
-#include"Player/RecordNReplayManager.h"
 #include"Kismet/GameplayStatics.h"
 // Sets default values for this component's properties
 URecordNReplayComponent::URecordNReplayComponent()

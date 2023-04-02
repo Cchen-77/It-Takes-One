@@ -4,7 +4,6 @@
 #include "Player/IMCharacter.h"
 #include"Player/IMSoul.h"
 #include"Player/IMPlayerController.h"
-#include"Player/RecordNReplayManager.h"
 #include"EnhancedInputSubsystems.h"
 #include"EnhancedInputComponent.h"
 #include"Kismet/KismetMathLibrary.h"
@@ -50,7 +49,6 @@ void AIMCharacter::PossessedBy(AController* NewController)
 {
 	auto CMC = GetCharacterMovement();
 	Super::PossessedBy(NewController);
-	CustomTimeDilation = 1;
 	if (auto PC = Cast<APlayerController>(NewController)) {
 		if (auto EISubsys = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer())) {
 			if (IMC_Body) {
@@ -68,7 +66,6 @@ void AIMCharacter::UnPossessed()
 			}
 		}
 	}
-	CustomTimeDilation = 0;
 	Super::UnPossessed();
 }
 
@@ -85,7 +82,9 @@ void AIMCharacter::SendSoul()
 {
 	if (!bCanSendSoul) return;
 	if (SoulClass) {
-		bCanSendSoul = false;
+		CustomTimeDilation = 0;
+		OnPause.Broadcast();
+		//bCanSendSoul = false;
 		auto CMC = GetCharacterMovement();
 		check(CMC);
 		SetSavedState(GetVelocity(), CMC->IsFalling());
@@ -126,7 +125,11 @@ bool AIMCharacter::IsRealFalling_Implementation()
 	check(CMC);
 	return CMC->IsFalling();
 }
-void AIMCharacter::OnSoulBack()
+void AIMCharacter::OnSoulBack(AIMSoul* Soul)
 {
+	CustomTimeDilation = 1;
+	OnUnPause.Broadcast();
+	OnPause.AddUObject(Soul, &AIMSoul::Pause);
+	OnUnPause.AddUObject(Soul, &AIMSoul::UnPause);
 	PrepSavedState();
 }

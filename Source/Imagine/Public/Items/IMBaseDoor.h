@@ -6,7 +6,9 @@
 #include "GameFramework/Actor.h"
 #include"Items/ImBaseItem.h"
 #include "IMBaseDoor.generated.h"
-
+class UBaseLockComponent;
+DECLARE_MULTICAST_DELEGATE(OnComponentsSaveStateSignature);
+DECLARE_MULTICAST_DELEGATE(OnComponentsPrepStateSignature);
 UCLASS()
 class IMAGINE_API AIMBaseDoor : public AIMBaseItem
 {
@@ -20,6 +22,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 protected:
 	bool bIsOpen;
+	bool Saved_bIsOpen;
 	void PlayerEnter();
 public:
 	void UpdateOpeningState(bool IsOpen);
@@ -27,4 +30,11 @@ public:
 protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = Door)
 	uint8 DoorID = 0;
+protected:
+	OnComponentsSaveStateSignature OnComponentsSaveState;
+	OnComponentsPrepStateSignature OnComponentsPrepState;
+public:
+	virtual void SaveRNRItemState() override;
+	virtual void PrepRNRItemState() override;
+	void RegisterLockComponent(UBaseLockComponent* LockComponent);
 };

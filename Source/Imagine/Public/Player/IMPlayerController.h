@@ -4,14 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include"Player/RecordNReplayManager.h"
 #include "IMPlayerController.generated.h"
 
 /**
  * 
  */
+DECLARE_MULTICAST_DELEGATE(FSaveRNRItemsStateSignature);
+DECLARE_MULTICAST_DELEGATE(FPrepRNRItemsStateSignature);
 class ACameraActor;
-class URecordNReplayManager;
+class AIMBaseItem;
 UCLASS()
 class IMAGINE_API AIMPlayerController : public APlayerController
 {
@@ -32,11 +33,11 @@ protected:
 	void CameraBlendTo(FVector Location, float DeltaTime);
 	UPROPERTY(EditDefaultsOnly, Category = Camera, meta = (EditCondition = "bIsCameraBlending"))
 		float BlendingSpeed;
-
 public:
-	URecordNReplayManager* GetRecordNReplayManager() const;
+	void SaveRNRItemsState();
+	void PrepRNRItemsState();
+	void RNRItemRegister(AIMBaseItem* Item);
 protected:
-	UPROPERTY()
-		URecordNReplayManager* RecordNReplayManager;
-	
+	FSaveRNRItemsStateSignature OnSaveRNRItemsState;
+	FPrepRNRItemsStateSignature OnPrepRNRItemsState;
 };
