@@ -8,11 +8,13 @@
 #include"EnhancedInputComponent.h"
 #include"Kismet/KismetMathLibrary.h"
 #include"PaperFlipbookComponent.h"
+#include"Components/SceneComponent.h"
 #include"Debug/DebugCMC.h"
 #include"Debug/MyDebug.h"
 AIMCharacter::AIMCharacter(const FObjectInitializer& ObjInit)
 {
-	
+	KeySocket = CreateDefaultSubobject<USceneComponent>("KeySocket");
+	KeySocket->SetupAttachment(GetSprite());
 }
 void AIMCharacter::BeginPlay()
 {
@@ -132,4 +134,29 @@ void AIMCharacter::OnSoulBack(AIMSoul* Soul)
 	OnPause.AddUObject(Soul, &AIMSoul::Pause);
 	OnUnPause.AddUObject(Soul, &AIMSoul::UnPause);
 	PrepSavedState();
+}
+
+AIMKeyLock* AIMCharacter::GetHoldingKey()
+{
+	return HoldingKey;
+}
+bool AIMCharacter::GetKey(AIMKeyLock* Key)
+{
+	if (!HoldingKey) {
+		HoldingKey = Key;
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+void AIMCharacter::LoseKey()
+{
+	HoldingKey = nullptr;
+}
+
+FVector AIMCharacter::GetKeySocketLocation()
+{
+	return KeySocket->GetComponentLocation();
 }

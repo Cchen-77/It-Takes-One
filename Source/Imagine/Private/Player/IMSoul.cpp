@@ -5,6 +5,7 @@
 #include"Player/IMCharacter.h"
 #include"Player/IMPlayerController.h"
 #include"Components/SoulRNRComponent.h"
+#include"Components/SceneComponent.h"
 #include"GameFramework/CharacterMovementComponent.h"
 #include"Kismet/GameplayStatics.h"
 #include"EnhancedInputComponent.h"
@@ -14,6 +15,9 @@
 AIMSoul::AIMSoul(const FObjectInitializer& ObjInit)
 {
 	RecordNReplayComponent = CreateDefaultSubobject<USoulRNRComponent>("SoulRNR");
+	KeySocket = CreateDefaultSubobject<USceneComponent>("KeySocket");
+	KeySocket->SetupAttachment(GetSprite());
+	
 }
 void AIMSoul::BeginPlay()
 {
@@ -160,4 +164,30 @@ void AIMSoul::UnPossessed()
 		}
 	}
 	Super::UnPossessed();
+}
+
+AIMKeyLock* AIMSoul::GetHoldingKey()
+{
+	return HoldingKey;
+}
+bool AIMSoul::GetKey(AIMKeyLock* Key)
+{
+	if (!HoldingKey) {
+		HoldingKey = Key;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void AIMSoul::LoseKey()
+{
+	HoldingKey = nullptr;
+}
+
+FVector AIMSoul::GetKeySocketLocation()
+{
+	return KeySocket->GetComponentLocation();
 }

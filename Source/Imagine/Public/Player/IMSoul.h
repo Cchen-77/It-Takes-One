@@ -16,6 +16,8 @@ class AIMCharacter;
 class UInputAction;
 class UInputMappingContext;
 class USoulRNRComponent;
+class AIMKeyLock;
+class USceneComponent;
 UENUM(BlueprintType)
 enum EAction{
 	ACTION_NONE = 0 UMETA(Hidden),
@@ -83,4 +85,15 @@ public:
 	//Soul in Replaying incounter another recording start.is no need to Save state since it's state triggered.
 	void Pause();
 	void UnPause();
+public:
+	AIMKeyLock* GetHoldingKey();
+	bool GetKey(AIMKeyLock* Key);
+	void LoseKey();
+	FVector GetKeySocketLocation();
+protected:
+	UPROPERTY(VisibleAnywhere, Category = Components)
+		USceneComponent* KeySocket;
+	UPROPERTY()
+		AIMKeyLock* HoldingKey = nullptr;
+
 };

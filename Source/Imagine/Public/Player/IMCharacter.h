@@ -17,6 +17,8 @@ DECLARE_MULTICAST_DELEGATE(FOnUnPauseSignature);
 class AIMSoul;
 class UInputMappingContext;
 class UInputAction;
+class AIMKeyLock;
+class USceneComponent;
 UCLASS()
 class IMAGINE_API AIMCharacter : public APaperZDCharacter,public ICharacterInfoInterface
 {
@@ -60,4 +62,15 @@ public:
 protected:
 	FOnPauseSignature OnPause;
 	FOnUnPauseSignature OnUnPause;
+
+public:
+	AIMKeyLock* GetHoldingKey();
+	bool GetKey(AIMKeyLock* Key);
+	void LoseKey();
+	FVector GetKeySocketLocation();
+protected:
+	UPROPERTY(VisibleAnywhere,Category = Components)
+		USceneComponent* KeySocket;
+	UPROPERTY()
+		AIMKeyLock* HoldingKey = nullptr;
 };
