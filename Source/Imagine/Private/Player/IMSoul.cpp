@@ -7,7 +7,7 @@
 #include"Components/SoulRNRComponent.h"
 #include"Components/SceneComponent.h"
 #include"GameFramework/CharacterMovementComponent.h"
-#include"Items/IMKeyLock.h"
+#include"Items/IMCatchableItem.h"
 #include"Kismet/GameplayStatics.h"
 #include"EnhancedInputComponent.h"
 #include"EnhancedInputSubsystems.h"
@@ -16,8 +16,8 @@
 AIMSoul::AIMSoul(const FObjectInitializer& ObjInit)
 {
 	RecordNReplayComponent = CreateDefaultSubobject<USoulRNRComponent>("SoulRNR");
-	KeySocket = CreateDefaultSubobject<USceneComponent>("KeySocket");
-	KeySocket->SetupAttachment(GetSprite());
+	ItemSocket = CreateDefaultSubobject<USceneComponent>("ItemSocket");
+	ItemSocket->SetupAttachment(GetSprite());
 	
 }
 void AIMSoul::BeginPlay()
@@ -57,7 +57,7 @@ void AIMSoul::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EIC->BindAction(IA_Back, ETriggerEvent::Triggered, this, &AIMSoul::SoulBack);
 		EIC->BindAction(IA_Jump, ETriggerEvent::Triggered, this, &AIMSoul::Jump);
 		EIC->BindAction(IA_Swap, ETriggerEvent::Triggered, this, &AIMSoul::SoulSwap);
-		EIC->BindAction(IA_Throw,ETriggerEvent::Triggered,this,&AIMSoul::ThrowKey);
+		EIC->BindAction(IA_Throw,ETriggerEvent::Triggered,this,&AIMSoul::ThrowItem);
 	}
 }
 void AIMSoul::SetBody(AIMCharacter* TheBody)
@@ -104,14 +104,14 @@ void AIMSoul::ActionSwap()
 }
 void AIMSoul::ActionThrow()
 {
-	if (HoldingKey) {
+	if (CatchedItem) {
 		if (bIsFacingRight) {
-			HoldingKey->OnBeingThrow(FVector(1, 0, 1));
+			CatchedItem->OnBeingThrow(FVector(1, 0, 1));
 		}
 		else {
-			HoldingKey->OnBeingThrow(FVector(-1, 0, 1));
+			CatchedItem->OnBeingThrow(FVector(-1, 0, 1));
 		}
-		HoldingKey = nullptr;
+		CatchedItem = nullptr;
 	}
 }
 void AIMSoul::SetActionBuffer(uint32 Buffer)
@@ -127,7 +127,7 @@ void AIMSoul::After_SoulBack()
 	if (After_bWantsToSoulBack) {
 		After_bWantsToSoulBack = false;
 
-		HoldingKey = nullptr;
+		CatchedItem = nullptr;
 
 		auto IMPC = Cast<AIMPlayerController>(GetController());
 		check(IMPC);
@@ -159,12 +159,12 @@ bool AIMSoul::IsRealFalling_Implementation()
 void AIMSoul::Pause()
 {
 	CustomTimeDilation = 0;
-	Pausing_HoldingKey = HoldingKey;
+	Pausing_CatchedItem = CatchedItem;
 }
 void AIMSoul::UnPause()
 {
 	CustomTimeDilation = 1;
-	HoldingKey = Pausing_HoldingKey;
+	CatchedItem = Pausing_CatchedItem;
 }
 void AIMSoul::PossessedBy(AController* NewController)
 {
@@ -191,14 +191,14 @@ void AIMSoul::UnPossessed()
 	Super::UnPossessed();
 }
 
-AIMKeyLock* AIMSoul::GetHoldingKey()
+AIMCatchableItem* AIMSoul::GetCatchedItem()
 {
-	return HoldingKey;
+	return CatchedItem;
 }
-bool AIMSoul::GetKey(AIMKeyLock* Key)
+bool AIMSoul::GetItem(AIMCatchableItem* Item)
 {
-	if (!HoldingKey) {
-		HoldingKey = Key;
+	if (!CatchedItem) {
+		CatchedItem = Item;
 		return true;
 	}
 	else
@@ -207,17 +207,17 @@ bool AIMSoul::GetKey(AIMKeyLock* Key)
 	}
 }
 
-void AIMSoul::LoseKey()
+void AIMSoul::LoseCatchedItem()
 {
-	HoldingKey = nullptr;
+	CatchedItem = nullptr;
 }
 
-FVector AIMSoul::GetKeySocketLocation()
+FVector AIMSoul::GetCatchedItemSocketLocation()
 {
-	return KeySocket->GetComponentLocation();
+	return ItemSocket->GetComponentLocation();
 }
 
-void AIMSoul::ThrowKey()
+void AIMSoul::ThrowItem()
 {
 	ActionBuffer |= EAction::ACTION_THROW;
 }

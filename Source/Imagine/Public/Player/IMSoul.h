@@ -16,7 +16,7 @@ class AIMCharacter;
 class UInputAction;
 class UInputMappingContext;
 class USoulRNRComponent;
-class AIMKeyLock;
+class AIMCatchableItem;
 class USceneComponent;
 UENUM(BlueprintType)
 enum EAction {
@@ -87,19 +87,19 @@ protected:
 	bool bIsFacingRight = true;
 public:
 	//Soul in Replaying incounter another recording start.is no need to Save state since it's state triggered.
-	AIMKeyLock* Pausing_HoldingKey;
+	AIMCatchableItem* Pausing_CatchedItem;
 	void Pause();
 	void UnPause();
 public:
-	AIMKeyLock* GetHoldingKey();
-	bool GetKey(AIMKeyLock* Key);
-	void LoseKey();
-	FVector GetKeySocketLocation();
-	void ThrowKey();
+	AIMCatchableItem* GetCatchedItem();
+	bool GetItem(AIMCatchableItem* Key);
+	void LoseCatchedItem();
+	FVector GetCatchedItemSocketLocation();
+	void ThrowItem();
 protected:
 	UPROPERTY(VisibleAnywhere, Category = Components)
-		USceneComponent* KeySocket;
+		USceneComponent* ItemSocket;
 	UPROPERTY()
-		AIMKeyLock* HoldingKey = nullptr;
+		AIMCatchableItem* CatchedItem = nullptr;
 
 };

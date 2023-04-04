@@ -4,7 +4,6 @@
 #include "Components/KeyLockComponent.h"
 #include"Player/IMCharacter.h"
 #include"Items/IMBaseDoor.h"
-#include"Items/IMKeyLock.h"
 #include"Kismet/GameplayStatics.h"
 void UKeyLockComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {

@@ -9,13 +9,13 @@
 #include"Kismet/KismetMathLibrary.h"
 #include"PaperFlipbookComponent.h"
 #include"Components/SceneComponent.h"
-#include"Items/IMKeyLock.h"
+#include"Items/IMCatchableItem.h"
 #include"Debug/DebugCMC.h"
 #include"Debug/MyDebug.h"
 AIMCharacter::AIMCharacter(const FObjectInitializer& ObjInit)
 {
-	KeySocket = CreateDefaultSubobject<USceneComponent>("KeySocket");
-	KeySocket->SetupAttachment(GetSprite());
+	ItemSocket = CreateDefaultSubobject<USceneComponent>("ItemSocket");
+	ItemSocket->SetupAttachment(GetSprite());
 }
 void AIMCharacter::BeginPlay()
 {
@@ -46,7 +46,7 @@ void AIMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EIC->BindAction(IA_SendSoul, ETriggerEvent::Triggered, this, &AIMCharacter::SendSoul);
 		EIC->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AIMCharacter::Move);
 		EIC->BindAction(IA_Jump, ETriggerEvent::Triggered, this, &AIMCharacter::Jump);
-		EIC->BindAction(IA_Throw, ETriggerEvent::Triggered, this, &AIMCharacter::ThrowKey);
+		EIC->BindAction(IA_Throw, ETriggerEvent::Triggered, this, &AIMCharacter::ThrowItem);
 	}
 }
 void AIMCharacter::PossessedBy(AController* NewController)
@@ -107,7 +107,7 @@ void AIMCharacter::Pause()
 	CustomTimeDilation = 0;
 	auto CMC = GetCharacterMovement();
 	check(CMC);
-	SetPausingState(GetVelocity(), CMC->IsFalling(),HoldingKey);
+	SetPausingState(GetVelocity(), CMC->IsFalling(), CatchedItem);
 	OnPause.Broadcast();
 }
 void AIMCharacter::UnPause()
@@ -116,11 +116,11 @@ void AIMCharacter::UnPause()
 	CustomTimeDilation = 1;
 	OnUnPause.Broadcast();
 }
-void AIMCharacter::SetPausingState(const FVector& Velocity, bool IsFalling,AIMKeyLock* Key)
+void AIMCharacter::SetPausingState(const FVector& Velocity, bool IsFalling,AIMCatchableItem* Item)
 {
 	Pausing_Velocity = Velocity;
 	Pausing_bIsFalling = IsFalling;
-	Pausing_HoldingKey = HoldingKey;
+	Pausing_CatchedItem = Item;
 
 }
 void AIMCharacter::PrepPausingState()
@@ -131,7 +131,7 @@ void AIMCharacter::PrepPausingState()
 	if (Pausing_bIsFalling) {
 		CMC->SetMovementMode(EMovementMode::MOVE_Falling);
 	}
-	HoldingKey = Pausing_HoldingKey;
+	CatchedItem = Pausing_CatchedItem;
 }
 FVector AIMCharacter::GetRealVelocity_Implementation()
 {
@@ -153,14 +153,14 @@ void AIMCharacter::OnSoulBack(AIMSoul* Soul)
 	IMPC->PrepRNRItemsState();
 }
 
-AIMKeyLock* AIMCharacter::GetHoldingKey()
+AIMCatchableItem* AIMCharacter::GetCatchedItem()
 {
-	return HoldingKey;
+	return CatchedItem;
 }
-bool AIMCharacter::GetKey(AIMKeyLock* Key)
+bool AIMCharacter::GetItem(AIMCatchableItem* Item)
 {
-	if (!HoldingKey) {
-		HoldingKey = Key;
+	if (!CatchedItem) {
+		CatchedItem = Item;
 		return true;
 	}
 	else {
@@ -168,25 +168,25 @@ bool AIMCharacter::GetKey(AIMKeyLock* Key)
 	}
 }
 
-void AIMCharacter::LoseKey()
+void AIMCharacter::LoseCatchedItem()
 {
-	HoldingKey = nullptr;
+	CatchedItem = nullptr;
 }
 
-FVector AIMCharacter::GetKeySocketLocation()
+FVector AIMCharacter::GetCatchedItemSocketLocation()
 {
-	return KeySocket->GetComponentLocation();
+	return ItemSocket->GetComponentLocation();
 }
 
-void AIMCharacter::ThrowKey()
+void AIMCharacter::ThrowItem()
 {
-	if (HoldingKey) {
+	if (CatchedItem) {
 		if (bFacingRight){
-			HoldingKey->OnBeingThrow(FVector(1, 0, 1));
+			CatchedItem->OnBeingThrow(FVector(1, 0, 1));
 		}
 		else {
-			HoldingKey->OnBeingThrow(FVector(-1, 0, 1));
+			CatchedItem->OnBeingThrow(FVector(-1, 0, 1));
 		}
-		HoldingKey = nullptr;
+		CatchedItem = nullptr;
 	}
 }
