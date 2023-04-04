@@ -9,6 +9,7 @@
 #include"Kismet/KismetMathLibrary.h"
 #include"PaperFlipbookComponent.h"
 #include"Components/SceneComponent.h"
+#include"Items/IMKeyLock.h"
 #include"Debug/DebugCMC.h"
 #include"Debug/MyDebug.h"
 AIMCharacter::AIMCharacter(const FObjectInitializer& ObjInit)
@@ -45,6 +46,7 @@ void AIMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EIC->BindAction(IA_SendSoul, ETriggerEvent::Triggered, this, &AIMCharacter::SendSoul);
 		EIC->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AIMCharacter::Move);
 		EIC->BindAction(IA_Jump, ETriggerEvent::Triggered, this, &AIMCharacter::Jump);
+		EIC->BindAction(IA_Throw, ETriggerEvent::Triggered, this, &AIMCharacter::ThrowKey);
 	}
 }
 void AIMCharacter::PossessedBy(AController* NewController)
@@ -84,16 +86,13 @@ void AIMCharacter::SendSoul()
 {
 	if (!bCanSendSoul) return;
 	if (SoulClass) {
-		CustomTimeDilation = 0;
-		OnPause.Broadcast();
 		//bCanSendSoul = false;
-		auto CMC = GetCharacterMovement();
-		check(CMC);
-		SetSavedState(GetVelocity(), CMC->IsFalling());
+		Pause();
+		auto IMPC = Cast<AIMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0));
+		check(IMPC);
+		IMPC->SaveRNRItemsState();
 		AIMSoul* MySoul = GetWorld()->SpawnActorDeferred<AIMSoul>(SoulClass, GetActorTransform());
 		MySoul->SetBody(this);
-		auto IMPC = Cast<AIMPlayerController>(GetController());
-		check(IMPC);
 		MySoul->FinishSpawning(GetActorTransform());
 		IMPC->Possess(MySoul);
 	}	
@@ -103,19 +102,36 @@ void AIMCharacter::Move(const FInputActionValue& value)
 	float Direction = value.Get<float>();
 	AddMovementInput(FVector(1, 0, 0), Direction);
 }
-void AIMCharacter::SetSavedState(const FVector& Velocity, bool IsFalling)
+void AIMCharacter::Pause()
 {
-	Saved_Velocity = Velocity;
-	Saved_bIsFalling = IsFalling;
+	CustomTimeDilation = 0;
+	auto CMC = GetCharacterMovement();
+	check(CMC);
+	SetPausingState(GetVelocity(), CMC->IsFalling(),HoldingKey);
+	OnPause.Broadcast();
 }
-void AIMCharacter::PrepSavedState()
+void AIMCharacter::UnPause()
+{
+	PrepPausingState();
+	CustomTimeDilation = 1;
+	OnUnPause.Broadcast();
+}
+void AIMCharacter::SetPausingState(const FVector& Velocity, bool IsFalling,AIMKeyLock* Key)
+{
+	Pausing_Velocity = Velocity;
+	Pausing_bIsFalling = IsFalling;
+	Pausing_HoldingKey = HoldingKey;
+
+}
+void AIMCharacter::PrepPausingState()
 {
 	auto CMC = GetCharacterMovement();
 	check(CMC);
-	CMC->Velocity = Saved_Velocity;
-	if (Saved_bIsFalling) {
+	CMC->Velocity = Pausing_Velocity;
+	if (Pausing_bIsFalling) {
 		CMC->SetMovementMode(EMovementMode::MOVE_Falling);
 	}
+	HoldingKey = Pausing_HoldingKey;
 }
 FVector AIMCharacter::GetRealVelocity_Implementation()
 {
@@ -129,11 +145,12 @@ bool AIMCharacter::IsRealFalling_Implementation()
 }
 void AIMCharacter::OnSoulBack(AIMSoul* Soul)
 {
-	CustomTimeDilation = 1;
-	OnUnPause.Broadcast();
+	UnPause();
 	OnPause.AddUObject(Soul, &AIMSoul::Pause);
 	OnUnPause.AddUObject(Soul, &AIMSoul::UnPause);
-	PrepSavedState();
+	auto IMPC = Cast<AIMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	check(IMPC);
+	IMPC->PrepRNRItemsState();
 }
 
 AIMKeyLock* AIMCharacter::GetHoldingKey()
@@ -159,4 +176,17 @@ void AIMCharacter::LoseKey()
 FVector AIMCharacter::GetKeySocketLocation()
 {
 	return KeySocket->GetComponentLocation();
+}
+
+void AIMCharacter::ThrowKey()
+{
+	if (HoldingKey) {
+		if (bFacingRight){
+			HoldingKey->OnBeingThrow(FVector(1, 0, 1));
+		}
+		else {
+			HoldingKey->OnBeingThrow(FVector(-1, 0, 1));
+		}
+		HoldingKey = nullptr;
+	}
 }

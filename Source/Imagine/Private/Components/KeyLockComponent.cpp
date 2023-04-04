@@ -12,7 +12,8 @@ void UKeyLockComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	auto Player = Cast<AIMCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	auto Door = Cast<AIMBaseDoor>(GetOwner());
 	check(Door);
-	if (Player) {
+	//TODO
+	/*if (Player) {
 		if (auto Key = Player->GetHoldingKey()) {
 			if (Key->KeyID == Door->GetDoorID()) {
 				Door->UpdateOpeningState(true);
@@ -28,5 +29,5 @@ void UKeyLockComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	}
 	else {
 		Door->UpdateOpeningState(false);
-	}
+	}*/
 }

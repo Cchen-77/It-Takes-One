@@ -38,6 +38,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Soul)
 		TSubclassOf<AIMSoul> SoulClass;
 	void SendSoul();
+	bool bFacingRight = true;
 	void Move(const FInputActionValue& value);
 	bool bCanSendSoul = true;
 protected:
@@ -49,13 +50,17 @@ protected:
 		UInputAction* IA_Move;
 	UPROPERTY(EditDefaultsOnly, Category = Input)
 		UInputAction* IA_Jump;
+	UPROPERTY(EditDefaultsOnly, Category = Input)
+		UInputAction* IA_Throw;
 protected:
-	bool bFacingRight = true;
-	FVector Saved_Velocity;
-	bool Saved_bIsFalling;
+	FVector Pausing_Velocity;
+	bool Pausing_bIsFalling;
+	AIMKeyLock* Pausing_HoldingKey;
+	void Pause();
+	void UnPause();
 public:
-	void SetSavedState(const FVector& Velocity, bool IsFalling);
-	void PrepSavedState();
+	void SetPausingState(const FVector& Velocity, bool IsFalling, AIMKeyLock* Key);
+	void PrepPausingState();
 public:
 	virtual FVector GetRealVelocity_Implementation();
 	virtual bool IsRealFalling_Implementation();
@@ -68,6 +73,7 @@ public:
 	bool GetKey(AIMKeyLock* Key);
 	void LoseKey();
 	FVector GetKeySocketLocation();
+	void ThrowKey();
 protected:
 	UPROPERTY(VisibleAnywhere,Category = Components)
 		USceneComponent* KeySocket;

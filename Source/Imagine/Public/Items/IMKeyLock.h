@@ -23,14 +23,23 @@ public:
 	virtual void PrepRNRItemState();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Lock)
 		uint8 KeyID;
-	void OnKeyDrop(FVector Direction);
+	void OnBeingThrow(FVector Direction);
 protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(VisibleAnywhere, Category = Components)
 		UProjectileMovementComponent* ProjectileMovement;
+	UPROPERTY(EditDefaultsOnly, Category = Dropping)
+		float ThrowingSpeed = 300;
+
 	AActor* Holder = nullptr;
 	AActor* Saved_Holder = nullptr;
+
 	float RemainingTime = -1;
 	float Saved_RemainingTime = -1;
+
 	FVector Saved_Velocity; 
+
+	FVector Saved_Location;
+
+	bool Saved_bProjectileMoving;
 };

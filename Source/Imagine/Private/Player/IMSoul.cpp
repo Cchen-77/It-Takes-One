@@ -7,6 +7,7 @@
 #include"Components/SoulRNRComponent.h"
 #include"Components/SceneComponent.h"
 #include"GameFramework/CharacterMovementComponent.h"
+#include"Items/IMKeyLock.h"
 #include"Kismet/GameplayStatics.h"
 #include"EnhancedInputComponent.h"
 #include"EnhancedInputSubsystems.h"
@@ -56,6 +57,7 @@ void AIMSoul::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EIC->BindAction(IA_Back, ETriggerEvent::Triggered, this, &AIMSoul::SoulBack);
 		EIC->BindAction(IA_Jump, ETriggerEvent::Triggered, this, &AIMSoul::Jump);
 		EIC->BindAction(IA_Swap, ETriggerEvent::Triggered, this, &AIMSoul::SoulSwap);
+		EIC->BindAction(IA_Throw,ETriggerEvent::Triggered,this,&AIMSoul::ThrowKey);
 	}
 }
 void AIMSoul::SetBody(AIMCharacter* TheBody)
@@ -79,8 +81,14 @@ void AIMSoul::StartAction()
 {
 	if (ActionBuffer & ACTION_SWAP) {
 		ActionSwap();
+		ActionBuffer = 0;
+		return;
 	}
-	ActionBuffer = 0;
+	if (ActionBuffer & ACTION_THROW) {
+		ActionThrow();
+		ActionBuffer = 0;
+		return;
+	}
 }
 void AIMSoul::ActionSwap()
 {
@@ -92,6 +100,18 @@ void AIMSoul::ActionSwap()
 	}
 	else {
 		SoulBack();
+	}
+}
+void AIMSoul::ActionThrow()
+{
+	if (HoldingKey) {
+		if (bIsFacingRight) {
+			HoldingKey->OnBeingThrow(FVector(1, 0, 1));
+		}
+		else {
+			HoldingKey->OnBeingThrow(FVector(-1, 0, 1));
+		}
+		HoldingKey = nullptr;
 	}
 }
 void AIMSoul::SetActionBuffer(uint32 Buffer)
@@ -106,6 +126,9 @@ void AIMSoul::After_SoulBack()
 {
 	if (After_bWantsToSoulBack) {
 		After_bWantsToSoulBack = false;
+
+		HoldingKey = nullptr;
+
 		auto IMPC = Cast<AIMPlayerController>(GetController());
 		check(IMPC);
 		IMPC->Possess(Body);
@@ -136,10 +159,12 @@ bool AIMSoul::IsRealFalling_Implementation()
 void AIMSoul::Pause()
 {
 	CustomTimeDilation = 0;
+	Pausing_HoldingKey = HoldingKey;
 }
 void AIMSoul::UnPause()
 {
 	CustomTimeDilation = 1;
+	HoldingKey = Pausing_HoldingKey;
 }
 void AIMSoul::PossessedBy(AController* NewController)
 {
@@ -190,4 +215,9 @@ void AIMSoul::LoseKey()
 FVector AIMSoul::GetKeySocketLocation()
 {
 	return KeySocket->GetComponentLocation();
+}
+
+void AIMSoul::ThrowKey()
+{
+	ActionBuffer |= EAction::ACTION_THROW;
 }

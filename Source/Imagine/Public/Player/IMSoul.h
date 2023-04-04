@@ -19,9 +19,10 @@ class USoulRNRComponent;
 class AIMKeyLock;
 class USceneComponent;
 UENUM(BlueprintType)
-enum EAction{
+enum EAction {
 	ACTION_NONE = 0 UMETA(Hidden),
-	ACTION_SWAP = 0x1
+	ACTION_SWAP = 0x1,
+	ACTION_THROW = 0x2
 };
 UCLASS()
 class IMAGINE_API AIMSoul : public APaperZDCharacter, public ICharacterInfoInterface
@@ -56,7 +57,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Input)
 		UInputAction* IA_Swap;
 	UPROPERTY(EditDefaultsOnly, Category = Input)
+		UInputAction* IA_Throw;
+	UPROPERTY(EditDefaultsOnly, Category = Input)
 		UInputMappingContext* IMC_Soul;
+	
 protected:
 	void Move(const FInputActionValue& value);
 	void SoulBack();
@@ -68,7 +72,7 @@ protected:
 public:
 	void StartAction();
 	void ActionSwap();
-
+	void ActionThrow();
 	void SetActionBuffer(uint32 Buffer);
 	uint32 GetActionBufferCache();
 public:
@@ -83,6 +87,7 @@ protected:
 	bool bIsFacingRight = true;
 public:
 	//Soul in Replaying incounter another recording start.is no need to Save state since it's state triggered.
+	AIMKeyLock* Pausing_HoldingKey;
 	void Pause();
 	void UnPause();
 public:
@@ -90,6 +95,7 @@ public:
 	bool GetKey(AIMKeyLock* Key);
 	void LoseKey();
 	FVector GetKeySocketLocation();
+	void ThrowKey();
 protected:
 	UPROPERTY(VisibleAnywhere, Category = Components)
 		USceneComponent* KeySocket;
