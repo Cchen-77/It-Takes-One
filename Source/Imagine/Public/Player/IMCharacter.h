@@ -74,6 +74,7 @@ public:
 	void LoseCatchedItem();
 	FVector GetCatchedItemSocketLocation();
 	void ThrowItem();
+	void DropItem();
 protected:
 	UPROPERTY(VisibleAnywhere,Category = Components)
 		USceneComponent* ItemSocket;

@@ -182,11 +182,19 @@ void AIMCharacter::ThrowItem()
 {
 	if (CatchedItem) {
 		if (bFacingRight){
-			CatchedItem->OnBeingThrow(FVector(1, 0, 1));
+			CatchedItem->OnBeingThrowed(FVector(1, 0, 1));
 		}
 		else {
-			CatchedItem->OnBeingThrow(FVector(-1, 0, 1));
+			CatchedItem->OnBeingThrowed(FVector(-1, 0, 1));
 		}
+		CatchedItem = nullptr;
+	}
+}
+
+void AIMCharacter::DropItem()
+{
+	if (CatchedItem) {
+		CatchedItem->OnBeingDropped();
 		CatchedItem = nullptr;
 	}
 }

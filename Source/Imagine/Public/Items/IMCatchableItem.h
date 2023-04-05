@@ -21,7 +21,8 @@ public:
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	virtual void SaveRNRItemState();
 	virtual void PrepRNRItemState();
-	void OnBeingThrow(FVector Direction);
+	void OnBeingThrowed(FVector Direction);
+	void OnBeingDropped();
 protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(VisibleAnywhere, Category = Components)

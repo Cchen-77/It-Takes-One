@@ -106,10 +106,10 @@ void AIMSoul::ActionThrow()
 {
 	if (CatchedItem) {
 		if (bIsFacingRight) {
-			CatchedItem->OnBeingThrow(FVector(1, 0, 1));
+			CatchedItem->OnBeingThrowed(FVector(1, 0, 1));
 		}
 		else {
-			CatchedItem->OnBeingThrow(FVector(-1, 0, 1));
+			CatchedItem->OnBeingThrowed(FVector(-1, 0, 1));
 		}
 		CatchedItem = nullptr;
 	}
@@ -220,4 +220,12 @@ FVector AIMSoul::GetCatchedItemSocketLocation()
 void AIMSoul::ThrowItem()
 {
 	ActionBuffer |= EAction::ACTION_THROW;
+}
+
+void AIMSoul::DropItem()
+{
+	if (CatchedItem) {
+		CatchedItem->OnBeingDropped();
+		CatchedItem = nullptr;
+	}
 }

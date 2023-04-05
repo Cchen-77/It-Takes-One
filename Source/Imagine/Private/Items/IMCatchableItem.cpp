@@ -74,13 +74,24 @@ void AIMCatchableItem::PrepRNRItemState()
 	SetActorLocation(Saved_Location);
 }
 
-void AIMCatchableItem::OnBeingThrow(FVector Direction)
+void AIMCatchableItem::OnBeingThrowed(FVector Direction)
 {
 	//example
 	Holder = nullptr;
 	check(ProjectileMovement);
+	FHitResult Hit;
 	ProjectileMovement->SetUpdatedComponent(Collision);
+	//avoid self picking.
+	ProjectileMovement->SafeMoveUpdatedComponent(FVector(0, 0, 5), ProjectileMovement->UpdatedComponent->GetComponentRotation(), true, Hit);
 	ProjectileMovement->Velocity = Direction*ThrowingSpeed;
+}
+
+void AIMCatchableItem::OnBeingDropped()
+{
+	Holder = nullptr;
+	check(ProjectileMovement);
+	ProjectileMovement->SetUpdatedComponent(Collision);
+	ProjectileMovement->Velocity = FVector::ZeroVector;
 }
 
 void AIMCatchableItem::BeginPlay()
