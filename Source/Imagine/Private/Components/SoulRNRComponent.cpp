@@ -35,7 +35,10 @@ void USoulRNRComponent::AfterRecord()
 void USoulRNRComponent::ReplayingFinish()
 {
 	SetRNRState(ERNRState::STATE_None);
-	GetOwner()->Destroy();
+	auto Soul = Cast<AIMSoul>(GetOwner());
+	check(Soul);
+	Soul->DropItem();
+	Soul->Destroy();
 }
 void USoulRNRComponent::DoReplaying(float DeltaTime)
 {

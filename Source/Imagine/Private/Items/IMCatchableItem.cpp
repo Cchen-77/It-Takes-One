@@ -1,29 +1,29 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Items/IMKeyLock.h"
+#include "Items/IMCatchableItem.h"
 #include"GameFramework/ProjectileMovementComponent.h"
 #include"Player/IMCharacter.h"
 #include"Player/IMSoul.h"
 #include"Components/BoxComponent.h"
 #include"Debug/MyDebug.h"
-AIMKeyLock::AIMKeyLock()
+AIMCatchableItem::AIMCatchableItem()
 {
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
 	ProjectileMovement->SetUpdatedComponent(Collision);
 }
 
-void AIMKeyLock::Tick(float DeltaTime)
+void AIMCatchableItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (Holder) {
 		ProjectileMovement->StopMovementImmediately();
 		ProjectileMovement->SetUpdatedComponent(nullptr);
 		if (auto IMCharacter = Cast<AIMCharacter>(Holder)) {
-			SetActorLocation(IMCharacter->GetKeySocketLocation());
+			SetActorLocation(IMCharacter->GetCatchedItemSocketLocation());
 		}
 		else if (auto IMSoul = Cast<AIMSoul>(Holder)) {
-			SetActorLocation(IMSoul->GetKeySocketLocation());
+			SetActorLocation(IMSoul->GetCatchedItemSocketLocation());
 		}
 		Collision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
@@ -32,23 +32,23 @@ void AIMKeyLock::Tick(float DeltaTime)
 	}
 }
 
-void AIMKeyLock::Trigger(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AIMCatchableItem::Trigger(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	Super::Trigger(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 	if (Holder) return;
 	if (auto IMCharacter = Cast<AIMCharacter>(OtherActor)) {
-		if (IMCharacter->GetKey(this)) {
+		if (IMCharacter->GetItem(this)) {
 			Holder = IMCharacter;
 		}
 	}
 	else if (auto IMSoul = Cast<AIMSoul>(OtherActor)) {
-		if (IMSoul->GetKey(this)) {
+		if (IMSoul->GetItem(this)) {
 			Holder = IMSoul;
 		}
 	}
 }
 
-void AIMKeyLock::SaveRNRItemState()
+void AIMCatchableItem::SaveRNRItemState()
 {
 	if (ProjectileMovement->UpdatedComponent) {
 		Saved_bProjectileMoving = true;
@@ -58,11 +58,10 @@ void AIMKeyLock::SaveRNRItemState()
 	}
 	Saved_Velocity = ProjectileMovement->Velocity;
 	Saved_Holder = Holder;
-	Saved_RemainingTime = RemainingTime;
 	Saved_Location = GetActorLocation();
 }
 
-void AIMKeyLock::PrepRNRItemState()
+void AIMCatchableItem::PrepRNRItemState()
 {
 	if (Saved_bProjectileMoving) {
 		ProjectileMovement->SetUpdatedComponent(Collision);
@@ -72,20 +71,30 @@ void AIMKeyLock::PrepRNRItemState()
 	}
 	ProjectileMovement->Velocity = Saved_Velocity;
 	Holder = Saved_Holder;
-	RemainingTime = Saved_RemainingTime;
 	SetActorLocation(Saved_Location);
 }
 
-void AIMKeyLock::OnBeingThrow(FVector Direction)
+void AIMCatchableItem::OnBeingThrowed(FVector Direction)
 {
 	//example
 	Holder = nullptr;
 	check(ProjectileMovement);
+	FHitResult Hit;
 	ProjectileMovement->SetUpdatedComponent(Collision);
+	//avoid self picking.
+	ProjectileMovement->SafeMoveUpdatedComponent(FVector(0, 0, 5), ProjectileMovement->UpdatedComponent->GetComponentRotation(), true, Hit);
 	ProjectileMovement->Velocity = Direction*ThrowingSpeed;
 }
 
-void AIMKeyLock::BeginPlay()
+void AIMCatchableItem::OnBeingDropped()
+{
+	Holder = nullptr;
+	check(ProjectileMovement);
+	ProjectileMovement->SetUpdatedComponent(Collision);
+	ProjectileMovement->Velocity = FVector::ZeroVector;
+}
+
+void AIMCatchableItem::BeginPlay()
 {
 	Super::BeginPlay();
 }

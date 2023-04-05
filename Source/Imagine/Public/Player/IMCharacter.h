@@ -17,7 +17,7 @@ DECLARE_MULTICAST_DELEGATE(FOnUnPauseSignature);
 class AIMSoul;
 class UInputMappingContext;
 class UInputAction;
-class AIMKeyLock;
+class AIMCatchableItem;
 class USceneComponent;
 UCLASS()
 class IMAGINE_API AIMCharacter : public APaperZDCharacter,public ICharacterInfoInterface
@@ -55,11 +55,11 @@ protected:
 protected:
 	FVector Pausing_Velocity;
 	bool Pausing_bIsFalling;
-	AIMKeyLock* Pausing_HoldingKey;
+	AIMCatchableItem* Pausing_CatchedItem;
 	void Pause();
 	void UnPause();
 public:
-	void SetPausingState(const FVector& Velocity, bool IsFalling, AIMKeyLock* Key);
+	void SetPausingState(const FVector& Velocity, bool IsFalling, AIMCatchableItem* Item);
 	void PrepPausingState();
 public:
 	virtual FVector GetRealVelocity_Implementation();
@@ -69,14 +69,15 @@ protected:
 	FOnUnPauseSignature OnUnPause;
 
 public:
-	AIMKeyLock* GetHoldingKey();
-	bool GetKey(AIMKeyLock* Key);
-	void LoseKey();
-	FVector GetKeySocketLocation();
-	void ThrowKey();
+	AIMCatchableItem* GetCatchedItem();
+	bool GetItem(AIMCatchableItem* Key);
+	void LoseCatchedItem();
+	FVector GetCatchedItemSocketLocation();
+	void ThrowItem();
+	void DropItem();
 protected:
 	UPROPERTY(VisibleAnywhere,Category = Components)
-		USceneComponent* KeySocket;
+		USceneComponent* ItemSocket;
 	UPROPERTY()
-		AIMKeyLock* HoldingKey = nullptr;
+		AIMCatchableItem* CatchedItem = nullptr;
 };
