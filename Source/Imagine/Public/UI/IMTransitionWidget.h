@@ -9,13 +9,41 @@
 /**
  * 
  */
+class UUniformGridPanel;
+class UImage;
 UCLASS()
 class IMAGINE_API UIMTransitionWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	virtual void NativeOnInitialized();
+	virtual bool Initialize() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+	virtual void NativePreConstruct() override;
+	UFUNCTION(BlueprintCallable)
 	void Fadein();
+	UFUNCTION(BlueprintCallable)
 	void FadeOut();
-
+protected:
+	UPROPERTY(meta = (BindWidget))
+		UUniformGridPanel* Grid;
+	UPROPERTY()
+		TArray<UImage*> Images;
+	UPROPERTY(EditDefaultsOnly, Category = Image)
+		uint32 GridRows;
+	UPROPERTY(EditDefaultsOnly, Category = Image)
+		uint32 GridCollums;
+	UPROPERTY(EditDefaultsOnly, Category = Image)
+		TSoftObjectPtr<UTexture2D> BGTexture;
+	UPROPERTY(EditDefaultsOnly, Category = Image)
+		TSoftObjectPtr<UTexture2D> TransparentTexture;
+	
+protected:
+	float NowTime = 0;
+	UPROPERTY(EditDefaultsOnly,Category = Transition)
+	float BlendingTime = 0;
+	bool bFadeout = true;
+	
+	void ImageAppear(uint32 idx);
+	void ImageDisappear(uint32 idx);
+	uint32 OldDis = 0;
 };
