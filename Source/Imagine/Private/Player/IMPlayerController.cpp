@@ -12,31 +12,33 @@ AIMPlayerController::AIMPlayerController()
 void AIMPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	FVector ActorLocation = GetPawn()->GetActorLocation();
-	if (bIsCameraBlending) {
-		CameraBlendTo(ActorLocation,DeltaTime);
-	}
-	else {
-		CameraMoveto(ActorLocation);
+	if (bIsCameraLocked) {
+		FVector ActorLocation = GetPawn()->GetActorLocation();
+		if (bIsCameraBlending) {
+			CameraBlendTo(ActorLocation, DeltaTime);
+		}
+		else {
+			CameraMoveto(ActorLocation);
+		}
 	}
 }
 
 void AIMPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	IMCamera = GetWorld()->SpawnActor<ACameraActor>(ACameraActor::StaticClass(), FVector(0, CameraDistance, 0), FRotator(0, -90, 0));
+	IMCamera = GetWorld()->SpawnActor<ACameraActor>(IMCameraClass, CameraStartLocation, FRotator(0, -90, 0));
 	SetViewTarget(IMCamera);
 }
 
 void AIMPlayerController::CameraMoveto(FVector Location)
 {
-	Location.Y = CameraDistance;
+	Location.Y = CameraStartLocation.Y;
 	IMCamera->SetActorLocation(Location);
 }
 
 void AIMPlayerController::CameraBlendTo(FVector Location, float DeltaTime)
 {
-	Location.Y = CameraDistance;
+	Location.Y = CameraStartLocation.Y;
 	FVector OldLocation = IMCamera->GetActorLocation();
 	if ((Location - OldLocation).IsNearlyZero(0.01)) {
 		CameraMoveto(Location);

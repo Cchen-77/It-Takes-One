@@ -11,7 +11,6 @@
  */
 DECLARE_MULTICAST_DELEGATE(FSaveRNRItemsStateSignature);
 DECLARE_MULTICAST_DELEGATE(FPrepRNRItemsStateSignature);
-class ACameraActor;
 class AIMBaseItem;
 UCLASS()
 class IMAGINE_API AIMPlayerController : public APlayerController
@@ -23,12 +22,16 @@ public:
 protected:
 	virtual void BeginPlay() override;
 protected:
+	UPROPERTY(EditDefaultsOnly, Category = Camera)
+		TSubclassOf<ACameraActor> IMCameraClass;
 	UPROPERTY()
 		ACameraActor* IMCamera;
 	UPROPERTY(EditDefaultsOnly, Category = Camera)
-		float CameraDistance = 200;
+		FVector CameraStartLocation;
 	UPROPERTY(EditDefaultsOnly, Category = Camera)
 		bool bIsCameraBlending;
+	UPROPERTY(EditDefaultsOnly, Category = Camera)
+		bool bIsCameraLocked;
 	void CameraMoveto(FVector Location);
 	void CameraBlendTo(FVector Location, float DeltaTime);
 	UPROPERTY(EditDefaultsOnly, Category = Camera, meta = (EditCondition = "bIsCameraBlending"))

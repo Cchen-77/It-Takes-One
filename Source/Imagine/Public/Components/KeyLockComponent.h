@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class IMAGINE_API UKeyLockComponent : public UBaseLockComponent
 {
 	GENERATED_BODY()
