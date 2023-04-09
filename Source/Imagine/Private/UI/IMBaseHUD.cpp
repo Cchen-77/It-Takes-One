@@ -6,7 +6,9 @@
 #include"UI/IMTransitionWidget.h"
 void AIMBaseHUD::Transition_Fadein()
 {
-
+	if (TransitionWidget) {
+		TransitionWidget->Fadein();
+	}
 }
 void AIMBaseHUD::Transition_Fadeout()
 {
@@ -14,7 +16,7 @@ void AIMBaseHUD::Transition_Fadeout()
 		check(TransitionWidgetClass);
 		TransitionWidget = CreateWidget<UIMTransitionWidget>(GetOwningPlayerController(), TransitionWidgetClass);
 	}
-
+	TransitionWidget->FadeOut();
 }
 
 void AIMBaseHUD::BeginPlay()

@@ -10,7 +10,7 @@
  * 
  */
 class UUniformGridPanel;
-class UImage;
+class UIMBGUnit;
 UCLASS()
 class IMAGINE_API UIMTransitionWidget : public UUserWidget
 {
@@ -27,23 +27,18 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 		UUniformGridPanel* Grid;
 	UPROPERTY()
-		TArray<UImage*> Images;
-	UPROPERTY(EditDefaultsOnly, Category = Image)
+		TArray<UIMBGUnit*> BGUnits;
+	UPROPERTY(EditDefaultsOnly, Category = BG)
+		TSubclassOf<UIMBGUnit> BGUnitClass;
+	UPROPERTY(EditDefaultsOnly, Category = BG)
 		uint32 GridRows;
-	UPROPERTY(EditDefaultsOnly, Category = Image)
+	UPROPERTY(EditDefaultsOnly, Category = BG)
 		uint32 GridCollums;
-	UPROPERTY(EditDefaultsOnly, Category = Image)
-		TSoftObjectPtr<UTexture2D> BGTexture;
-	UPROPERTY(EditDefaultsOnly, Category = Image)
-		TSoftObjectPtr<UTexture2D> TransparentTexture;
 	
 protected:
 	float NowTime = 0;
 	UPROPERTY(EditDefaultsOnly,Category = Transition)
 	float BlendingTime = 0;
 	bool bFadeout = true;
-	
-	void ImageAppear(uint32 idx);
-	void ImageDisappear(uint32 idx);
 	uint32 OldDis = 0;
 };

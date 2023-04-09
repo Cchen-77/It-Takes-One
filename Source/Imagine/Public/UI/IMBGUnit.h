@@ -17,8 +17,8 @@ public:
 	void Fadein();
 	void Fadeout();
 protected:
-	UPROPERTY(meta = (BindWidgetAnim))
+	UPROPERTY(Transient,meta = (BindWidgetAnim))
 		UWidgetAnimation* FadeinAnim;
-	UPROPERTY(meta = (BindWidgetAnim))
+	UPROPERTY(Transient,meta = (BindWidgetAnim))
 		UWidgetAnimation* FadeoutAnim;
 };

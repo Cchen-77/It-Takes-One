@@ -16,10 +16,11 @@ class IMAGINE_API AIMBaseHUD : public AHUD
 {
 	GENERATED_BODY()
 public:
+	UFUNCTION(BlueprintCallable)
+		void Transition_Fadein();
+	UFUNCTION(BluepritnCallable)
+		void Transition_Fadeout();
 
-	void Transition_Fadein();
-
-	void Transition_Fadeout();
 protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(EditDefaultsOnly, Category = UMG)

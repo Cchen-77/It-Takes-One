@@ -2,13 +2,15 @@
 
 
 #include "UI/IMBGUnit.h"
-
+#include"Debug/MyDebug.h"
 void UIMBGUnit::Fadein()
 {
-	PlayAnimation(FadeinAnim);
+	PlayAnimation(FadeinAnim);	
+	//SetVisibility(ESlateVisibility::HitTestInvisible);
 }
 
 void UIMBGUnit::Fadeout()
 {
 	PlayAnimation(FadeoutAnim);
+	//SetVisibility(ESlateVisibility::Hidden);
 }
