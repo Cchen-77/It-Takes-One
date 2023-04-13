@@ -7,6 +7,7 @@
 #include"Kismet/GameplayStatics.h"
 #include"Kismet/KismetMathLibrary.h"
 #include"GameFramework/CharacterMovementComponent.h"
+#include"Debug/MyDebug.h"
 void USoulRNRComponent::DoRecording(float DeltaTime)
 {
 	AddRecord(DeltaTime);
@@ -72,7 +73,12 @@ void USoulRNRComponent::PrepRecord(FIMSoulRecord Record, float alpha)
 	FTransform DstTransform = UKismetMathLibrary::TLerp(NowTransform, Record.Transform, alpha);
 	auto Soul = Cast<AIMSoul>(GetOwner());
 	check(Soul);
-	Soul->SetActorTransform(DstTransform);
+
+	FHitResult Hit;
+	Soul->SetActorTransform(DstTransform,true,&Hit);
+	if (Hit.bBlockingHit) {
+		ReplayingFinish();
+	}
 	Soul->Replaying_Velocity = UKismetMathLibrary::VLerp(Soul->Replaying_Velocity, Record.Velocity, alpha);
 	if (alpha == 1) {
 		Soul->SetActionBuffer(Record.ActionBuffer);

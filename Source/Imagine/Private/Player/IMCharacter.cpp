@@ -24,6 +24,7 @@ void AIMCharacter::BeginPlay()
 	check(CMC);
 	CMC->SetDefaultMovementMode();
 	bCanSendSoul = true;	
+	WorldTime = 0;
 }
 void AIMCharacter::Tick(float DeltaTime)
 {
@@ -38,6 +39,11 @@ void AIMCharacter::Tick(float DeltaTime)
 		GetSprite()->SetRelativeScale3D(FVector(1, 1, 1));
 	}
 	auto CMC = GetCharacterMovement();
+
+	//user-friendly timer
+	if (GetController()) {
+		WorldTime += DeltaTime;
+	}
 }
 void AIMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -93,6 +99,7 @@ void AIMCharacter::SendSoul()
 		IMPC->SaveRNRItemsState();
 		AIMSoul* MySoul = GetWorld()->SpawnActorDeferred<AIMSoul>(SoulClass, GetActorTransform());
 		MySoul->SetBody(this);
+		MySoul->WorldTime = WorldTime;
 		MySoul->FinishSpawning(GetActorTransform());
 		IMPC->Possess(MySoul);
 	}	

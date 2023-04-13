@@ -47,6 +47,10 @@ void AIMSoul::Tick(float DeltaTime)
 		ActionBufferCache = ActionBuffer;
 		StartAction();
 	}
+	//user-friendly timer
+	if (GetController()) {
+		WorldTime += DeltaTime;
+	}
 }
 
 void AIMSoul::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

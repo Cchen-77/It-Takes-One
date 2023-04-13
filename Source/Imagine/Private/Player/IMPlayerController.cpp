@@ -2,11 +2,14 @@
 
 
 #include "Player/IMPlayerController.h"
+#include"Player/IMCharacter.h"
+#include"Player/IMSoul.h"
 #include"Items/IMBaseItem.h"
 #include"Camera/CameraActor.h"
 #include"EnhancedInputComponent.h"
 #include"EnhancedInputSubsystems.h"
 #include"UI/IMBaseHUD.h"
+#include"FX/IMFXSpawner.h"
 AIMPlayerController::AIMPlayerController()
 {
 	bAutoManageActiveCameraTarget = false;
@@ -34,6 +37,8 @@ void AIMPlayerController::BeginPlay()
 	if (auto EISubsys = GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>()) {
 		EISubsys->AddMappingContext(IMC_Base, 1);
 	}
+	FXSpawner = NewObject<UIMFXSpawner>(this, FXSpawnerClass);
+	check(FXSpawner);
 }
 
 void AIMPlayerController::CameraMoveto(FVector Location)
@@ -82,6 +87,17 @@ void AIMPlayerController::OnEsc()
 	auto IMHUD = Cast<AIMBaseHUD>(GetHUD());
 	check(IMHUD);
 	IMHUD->ESCMenu_Open();
+}
+
+float AIMPlayerController::GetWorldTime()
+{
+	if (auto IMCharacter = Cast<AIMCharacter>(GetPawn())) {
+		return IMCharacter->WorldTime;
+	}
+	if (auto IMSoul = Cast<AIMSoul>(GetPawn()) ){
+		return IMSoul->WorldTime;
+	}
+	return 0.0f;
 }
 
 

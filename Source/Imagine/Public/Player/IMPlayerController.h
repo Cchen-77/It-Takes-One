@@ -14,6 +14,7 @@ DECLARE_MULTICAST_DELEGATE(FPrepRNRItemsStateSignature);
 class AIMBaseItem;
 class UInputMappingContext;
 class UInputAction;
+class UIMFXSpawner;
 UCLASS()
 class IMAGINE_API AIMPlayerController : public APlayerController
 {
@@ -52,4 +53,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Input)
 		UInputAction* IA_Esc;
 	void OnEsc();
+protected:
+	UFUNCTION(BlueprintCallable)
+		float GetWorldTime();
+public:
+	void SpawnFX();
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = FX)
+		TSubclassOf<UIMFXSpawner> FXSpawnerClass;
+	UIMFXSpawner* FXSpawner;
 };

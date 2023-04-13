@@ -2,10 +2,12 @@
 
 
 #include "Items/IMWall.h"
-
+#include"Player/IMSoul.h"
+#include"Debug/MyDebug.h"
 void AIMWall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
 	if (bIsSrc2Dst) {
 		if (NowTime == BlendingTime) return;
 		NowTime += DeltaTime;
@@ -49,4 +51,9 @@ void AIMWall::PrepRNRItemState()
 	SetActorLocation(Saved_Location);
 	bIsSrc2Dst = Saved_bIsSrc2Dst;
 	NowTime = Saved_NowTime;
+}
+
+void AIMWall::Trigger(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	Super::Trigger(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 }

@@ -80,5 +80,6 @@ protected:
 		USceneComponent* ItemSocket;
 	UPROPERTY()
 		AIMCatchableItem* CatchedItem = nullptr;
-
+public:
+	float WorldTime = 0;
 };
