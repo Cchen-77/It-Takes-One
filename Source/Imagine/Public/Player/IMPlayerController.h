@@ -12,6 +12,8 @@
 DECLARE_MULTICAST_DELEGATE(FSaveRNRItemsStateSignature);
 DECLARE_MULTICAST_DELEGATE(FPrepRNRItemsStateSignature);
 class AIMBaseItem;
+class UInputMappingContext;
+class UInputAction;
 UCLASS()
 class IMAGINE_API AIMPlayerController : public APlayerController
 {
@@ -43,4 +45,11 @@ public:
 protected:
 	FSaveRNRItemsStateSignature OnSaveRNRItemsState;
 	FPrepRNRItemsStateSignature OnPrepRNRItemsState;
+protected:
+	virtual void SetupInputComponent() override;
+	UPROPERTY(EditDefaultsOnly, Category = Input)
+		UInputMappingContext* IMC_Base;
+	UPROPERTY(EditDefaultsOnly, Category = Input)
+		UInputAction* IA_Esc;
+	void OnEsc();
 };

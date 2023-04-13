@@ -9,6 +9,7 @@
 class UBoxComponent;
 class UPaperFlipbookComponent;
 class UPaperZDAnimationComponent;
+class UPaperFlipbook;
 UCLASS()
 class IMAGINE_API AIMBaseItem : public AActor
 {
@@ -30,6 +31,13 @@ public:
 	UFUNCTION()
 	virtual void Trigger(UPrimitiveComponent* OverlappedComponent,AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	virtual void TriggerFinish(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	virtual void SaveRNRItemState();
 	virtual void PrepRNRItemState();
+protected:
+	UPROPERTY(EditDefaultsOnly,Category = Sprite)
+	UPaperFlipbook* FB_Triggered;
+	UPROPERTY(EditDefaultsOnly,Category = Sprite)
+	UPaperFlipbook* FB_TriggerFinish;
 };

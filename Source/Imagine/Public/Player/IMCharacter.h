@@ -80,4 +80,5 @@ protected:
 		USceneComponent* ItemSocket;
 	UPROPERTY()
 		AIMCatchableItem* CatchedItem = nullptr;
+
 };

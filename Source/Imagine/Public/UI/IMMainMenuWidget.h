@@ -9,8 +9,21 @@
 /**
  * 
  */
+class AIMBaseHUD;
 UCLASS()
 class IMAGINE_API UIMMainMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	UIMMainMenuWidget(const FObjectInitializer& ObjInit);
+protected:
+	virtual void NativeConstruct() override;
+	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent);
+protected:
+	UPROPERTY(Transient,meta = (BindWidgetAnim))
+		UWidgetAnimation* StartBlink;
+	AIMBaseHUD* GetMyHUD();
+private:
+	AIMBaseHUD* MyHUD = nullptr;
 };

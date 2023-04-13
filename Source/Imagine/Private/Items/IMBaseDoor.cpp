@@ -16,21 +16,40 @@ AIMBaseDoor::AIMBaseDoor()
 void AIMBaseDoor::BeginPlay()
 {
 	Super::BeginPlay();
+	Sprite->SetLooping(false);
 }
 void AIMBaseDoor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (bIsOpen) {
+		if (FB_DoorOpening) {
+			Sprite->SetFlipbook(FB_DoorOpening);
+			Sprite->Play();
+		
+		}
 		TArray<AActor*> OverlappingActors;
 		Collision->GetOverlappingActors(OverlappingActors, AIMCharacter::StaticClass());
 		if (!OverlappingActors.IsEmpty()) {
+			if (FB_DoorEntering) {
+				Sprite->SetFlipbook(FB_DoorEntering);
+			}
 			PlayerEnter();
+		}
+	}
+	else {
+		if (FB_DoorClosing) {
+			Sprite->SetFlipbook(FB_DoorClosing);
+			Sprite->Play();
 		}
 	}
 	bIsOpen = true;
 }
 void AIMBaseDoor::PlayerEnter()
 {
+	if (FB_DoorEntering) {
+		Sprite->SetFlipbook(FB_DoorEntering);
+		Sprite->Play();
+	}
 	UMyDebug::Message("Enter!");
 }
 
@@ -38,7 +57,6 @@ uint8 AIMBaseDoor::GetDoorID()
 {
 	return DoorID;
 }
-
 void AIMBaseDoor::SaveRNRItemState()
 {
 	Saved_bIsOpen = bIsOpen;

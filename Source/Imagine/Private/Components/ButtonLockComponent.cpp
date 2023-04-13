@@ -29,7 +29,7 @@ void UButtonLockComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 }
 void UButtonLockComponent::OpenFor(float Time)
 {
-	OpeningTime += Time;
+	OpeningTime = Time;
 }
 
 void UButtonLockComponent::SaveState()
