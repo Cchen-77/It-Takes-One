@@ -36,6 +36,7 @@ public:
 	virtual void UnPossessed() override;
 protected:
 	virtual void BeginPlay() override;
+	FTransform BeginningTransformCache;
 public:
 	UPROPERTY(BlueprintReadOnly)
 		FVector Replaying_Velocity;

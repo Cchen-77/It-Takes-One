@@ -29,3 +29,8 @@ void AIMFXActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void AIMFXActor::SetFXFlipbook(UPaperFlipbook* FX)
+{
+	FXFlipbook = FX;
+}
+

@@ -17,7 +17,6 @@ class IMAGINE_API UIMBaseGameInstance : public UGameInstance
 public:
 	virtual void Init() override;
 public:
-
 	bool GetLevelInfo(int idx,FLevelInfo& Info);
 	uint32 GetLevelNums() const;
 protected:

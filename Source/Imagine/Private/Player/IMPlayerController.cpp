@@ -10,6 +10,7 @@
 #include"EnhancedInputSubsystems.h"
 #include"UI/IMBaseHUD.h"
 #include"FX/IMFXSpawner.h"
+#include"Debug/MyDebug.h"
 AIMPlayerController::AIMPlayerController()
 {
 	bAutoManageActiveCameraTarget = false;
@@ -98,6 +99,18 @@ float AIMPlayerController::GetWorldTime()
 		return IMSoul->WorldTime;
 	}
 	return 0.0f;
+}
+
+void AIMPlayerController::SpawnFX(FName FXName, FVector Location)
+{
+	check(FXSpawner);
+	bool success = FXSpawner->SpawnFX(FXName, Location);
+	if (success) {
+
+	}
+	else {
+		UMyDebug::Message("SpawnFail!");
+	}
 }
 
 

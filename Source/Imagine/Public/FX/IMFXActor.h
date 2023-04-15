@@ -24,5 +24,5 @@ protected:
 		void OnFXFinish();
 public:	
 	virtual void Tick(float DeltaTime) override;
-
+	void SetFXFlipbook(UPaperFlipbook* FX);
 };

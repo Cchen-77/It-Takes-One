@@ -27,6 +27,7 @@ void AIMSoul::BeginPlay()
 	After_bWantsToSoulBack = 0;
 	//BeginPlay with RecordingMode.
 	RecordNReplayComponent->SetRNRState(ERNRState::STATE_Recording);
+	BeginningTransformCache = GetTransform();
 }
 void AIMSoul::Tick(float DeltaTime)
 {
@@ -132,7 +133,8 @@ void AIMSoul::After_SoulBack()
 		After_bWantsToSoulBack = false;
 
 		CatchedItem = nullptr;
-
+		//back to beginningtransform
+		SetActorTransform(BeginningTransformCache);
 		auto IMPC = Cast<AIMPlayerController>(GetController());
 		check(IMPC);
 		IMPC->Possess(Body);

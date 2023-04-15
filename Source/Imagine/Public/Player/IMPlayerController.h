@@ -57,9 +57,11 @@ protected:
 	UFUNCTION(BlueprintCallable)
 		float GetWorldTime();
 public:
-	void SpawnFX();
+	UFUNCTION(BlueprintCallable)
+	void SpawnFX(FName FXName,FVector Location);
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = FX)
 		TSubclassOf<UIMFXSpawner> FXSpawnerClass;
+	UPROPERTY()
 	UIMFXSpawner* FXSpawner;
 };

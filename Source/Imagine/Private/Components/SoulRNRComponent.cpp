@@ -38,6 +38,10 @@ void USoulRNRComponent::ReplayingFinish()
 	SetRNRState(ERNRState::STATE_None);
 	auto Soul = Cast<AIMSoul>(GetOwner());
 	check(Soul);
+	if (auto IMPC = Cast<AIMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))) {
+		//Spawn FX
+		IMPC->SpawnFX(FName("FX_shine_white"), Soul->GetActorLocation());
+	}
 	Soul->DropItem();
 	Soul->Destroy();
 }
