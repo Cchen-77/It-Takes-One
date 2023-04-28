@@ -1,2 +1,16 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+Content/Datas filter=lfs diff=lfs merge=lfs -text
+Content/Materials filter=lfs diff=lfs merge=lfs -text
+Content/TileMaps filter=lfs diff=lfs merge=lfs -text
+Content/TileSets filter=lfs diff=lfs merge=lfs -text
+Content/Textures filter=lfs diff=lfs merge=lfs -text
+Content/Blueprint filter=lfs diff=lfs merge=lfs -text
+Content/Fonts filter=lfs diff=lfs merge=lfs -text
+Content/Input filter=lfs diff=lfs merge=lfs -text
+Content/Sprites filter=lfs diff=lfs merge=lfs -text
+Content/PaperZDAnims filter=lfs diff=lfs merge=lfs -text
+Content/Collections filter=lfs diff=lfs merge=lfs -text
+Content/Developers filter=lfs diff=lfs merge=lfs -text
+Content/Flipbooks filter=lfs diff=lfs merge=lfs -text
+Content/Map filter=lfs diff=lfs merge=lfs -text
