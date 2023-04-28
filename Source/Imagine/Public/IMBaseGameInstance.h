@@ -19,6 +19,7 @@ public:
 public:
 	bool GetLevelInfo(int idx,FLevelInfo& Info);
 	uint32 GetLevelNums() const;
+	FName GetNextLevelName();
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = Levels)
 		TArray<FLevelInfo> LevelInfos;

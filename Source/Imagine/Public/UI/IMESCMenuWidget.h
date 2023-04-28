@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include"UI/IMBaseWidget.h"
 #include "IMESCMenuWidget.generated.h"
 
 /**
@@ -12,7 +12,7 @@
 class UButton;
 class AIMBaseHUD;
 UCLASS()
-class IMAGINE_API UIMESCMenuWidget : public UUserWidget
+class IMAGINE_API UIMESCMenuWidget : public UIMBaseWidget
 {
 	GENERATED_BODY()
 
@@ -22,16 +22,26 @@ protected:
 	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
-	AIMBaseHUD* GetMyHUD();
 protected:
+	FTimerHandle Transition_Timer;
 	UFUNCTION()
 	void BackToMainMenu_Pre();
 	bool bHavPendingBacking;
-	FTimerHandle Transition_Timer;
 	void BackToMainMenu();
+	UFUNCTION()
+	void Restart_Pre();
+	bool bHavPendingRestarting;
+	void Restart();
 protected:
 	UPROPERTY(meta = (BindWidget))
+		UButton* Resume;
+	UPROPERTY(meta = (BindWidget))
+		UButton* Control;
+
+	UPROPERTY(meta = (BindWidget))
+		UButton* RestartCurrent;	
+
+	UPROPERTY(meta = (BindWidget))
 		UButton* BackToMenu;
-private:
-	AIMBaseHUD* MyHUD;
+	bool CanbeOperating() const;
 };

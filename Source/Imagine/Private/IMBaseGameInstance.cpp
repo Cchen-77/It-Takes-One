@@ -4,6 +4,7 @@
 #include "IMBaseGameInstance.h"
 #include"Kismet/GameplayStatics.h"
 #include"GameFramework/GameUserSettings.h"
+#include"Debug/MyDebug.h"
 void UIMBaseGameInstance::Init()
 {
 	Super::Init();
@@ -24,4 +25,22 @@ bool UIMBaseGameInstance::GetLevelInfo(int idx, FLevelInfo& Info)
 uint32 UIMBaseGameInstance::GetLevelNums() const
 {
 	return LevelInfos.Num();
+}
+
+FName UIMBaseGameInstance::GetNextLevelName()
+{
+	uint8 curidx = 0;
+	FString TheName = WorldContext->World()->GetMapName();
+	TheName.RemoveFromStart(WorldContext->World()->StreamingLevelsPrefix);
+	FName CurLevelName = *TheName;
+	for (; curidx != LevelInfos.Num(); ++curidx) {
+		if (LevelInfos[curidx].LevelName == CurLevelName)
+			break;
+	}
+	check(curidx != LevelInfos.Num());
+	if (curidx + 1 == LevelInfos.Num()) {
+		return "NULL";
+	}
+
+	return LevelInfos[curidx + 1].LevelName;
 }

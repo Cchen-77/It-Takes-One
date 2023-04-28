@@ -7,7 +7,7 @@
 #include"IMBaseGameInstance.h"
 #include"Components/TextBlock.h"
 #include"Components/Button.h"
-UIMLevelSelectingWidget::UIMLevelSelectingWidget(const FObjectInitializer& Objinit) :Super(Objinit)
+UIMLevelSelectingWidget::UIMLevelSelectingWidget(const FObjectInitializer& Objinit)
 {
 	bIsFocusable = true;
 }
@@ -30,8 +30,6 @@ void UIMLevelSelectingWidget::NativeConstruct()
 	bHavPendingTransition = false;
 	bHavPendingClosing = false;
 	CurrentLevelIndex = 0;
-	MyGI = nullptr;
-	MyHUD = nullptr;
 	LevelNums = GetMyGI()->GetLevelNums();
 	check(GetMyGI()->GetLevelInfo(CurrentLevelIndex, CurrentLevelInfoCache));
 	RefreshWidget();
@@ -95,16 +93,6 @@ void UIMLevelSelectingWidget::OpenLevel_Pre()
 void UIMLevelSelectingWidget::OpenLevel() {
 	UGameplayStatics::OpenLevel(GetWorld(), CurrentLevelInfoCache.LevelName);
 }
-AIMBaseHUD* UIMLevelSelectingWidget::GetMyHUD()
-{
-	if (!MyHUD) {
-		check(GetOwningPlayer());
-		MyHUD = Cast<AIMBaseHUD>(GetOwningPlayer()->GetHUD());
-		check(MyHUD);
-	}
-	return MyHUD;
-}
-
 void UIMLevelSelectingWidget::OnFadinginFinish()
 {
 	bInFadingIn = false;
@@ -124,12 +112,4 @@ void UIMLevelSelectingWidget::CloseSelf()
 bool UIMLevelSelectingWidget::CanbeOperating() const
 {
 	return !(bHavPendingClosing || bHavPendingTransition||bInFadingIn);
-}
-UIMBaseGameInstance* UIMLevelSelectingWidget::GetMyGI()
-{
-	if (!MyGI) {
-		MyGI = Cast<UIMBaseGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-		check(MyGI);
-	}
-	return MyGI;
 }

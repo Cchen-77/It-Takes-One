@@ -18,6 +18,7 @@ class UIMTransitionWidget;
 class UIMMainMenuWidget;
 class UIMLevelSelectingWidget;
 class UIMESCMenuWidget;
+class UIMLevelFinishWidget;
 UCLASS()
 class IMAGINE_API AIMBaseHUD : public AHUD
 {
@@ -37,6 +38,8 @@ public:
 		void ESCMenu_Open();
 	UFUNCTION(BlueprintCallable)
 		void ESCMenu_Close();
+	UFUNCTION(BlueprintCallable)
+		void LevelFinish_Open();
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = Setting)
 		EHUDMode HUDMode;
@@ -57,6 +60,10 @@ protected:
 		TSubclassOf<UIMESCMenuWidget> ESCMenuWidgetClass;
 	UPROPERTY()
 		UIMESCMenuWidget* ESCMenuWidget;
+	UPROPERTY(EditDefaultsOnly, Category = UMG)
+		TSubclassOf<UIMLevelFinishWidget> LevelFinishWidgetClass;
+	UPROPERTY()
+		UIMLevelFinishWidget* LevelFinishWidget;
 private:
 	void SetInputModeUIOnly(UUserWidget* FocusWidget);
 	void SetInputModeGameplayOnly();

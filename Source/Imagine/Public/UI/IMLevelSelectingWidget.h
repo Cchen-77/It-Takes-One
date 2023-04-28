@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include"UI/IMBaseWidget.h"
 #include"IMInfoTypes.h"
 #include"Engine/DataTable.h"
 #include "IMLevelSelectingWidget.generated.h"
@@ -23,7 +23,7 @@ class AIMBaseHUD;
 class UTextBlock;
 class UButton;
 UCLASS()
-class IMAGINE_API UIMLevelSelectingWidget : public UUserWidget
+class IMAGINE_API UIMLevelSelectingWidget : public UIMBaseWidget
 {
 	GENERATED_BODY()
 
@@ -76,11 +76,4 @@ protected:
 	FTimerHandle Closing_Timer;
 	void CloseSelf();
 	bool CanbeOperating() const;
-
-protected:
-	UIMBaseGameInstance* GetMyGI();
-	AIMBaseHUD* GetMyHUD();
-private:
-	UIMBaseGameInstance* MyGI = nullptr;
-	AIMBaseHUD* MyHUD = nullptr;
 };

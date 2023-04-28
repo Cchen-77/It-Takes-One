@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include"UI/IMBaseWidget.h"
 #include "IMMainMenuWidget.generated.h"
 
 /**
@@ -11,7 +11,7 @@
  */
 class AIMBaseHUD;
 UCLASS()
-class IMAGINE_API UIMMainMenuWidget : public UUserWidget
+class IMAGINE_API UIMMainMenuWidget : public UIMBaseWidget
 {
 	GENERATED_BODY()
 
@@ -23,7 +23,4 @@ protected:
 protected:
 	UPROPERTY(Transient,meta = (BindWidgetAnim))
 		UWidgetAnimation* StartBlink;
-	AIMBaseHUD* GetMyHUD();
-private:
-	AIMBaseHUD* MyHUD = nullptr;
 };

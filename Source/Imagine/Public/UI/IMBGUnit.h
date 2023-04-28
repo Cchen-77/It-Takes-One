@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include"UI/IMBaseWidget.h"
 #include "IMBGUnit.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class IMAGINE_API UIMBGUnit : public UUserWidget
+class IMAGINE_API UIMBGUnit : public UIMBaseWidget
 {
 	GENERATED_BODY()
 public:

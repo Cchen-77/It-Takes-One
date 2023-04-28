@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include"UI/IMBaseWidget.h"
 #include "IMTransitionWidget.generated.h"
 
 /**
@@ -12,7 +12,7 @@
 class UUniformGridPanel;
 class UIMBGUnit;
 UCLASS()
-class IMAGINE_API UIMTransitionWidget : public UUserWidget
+class IMAGINE_API UIMTransitionWidget : public UIMBaseWidget
 {
 	GENERATED_BODY()
 public:

@@ -6,6 +6,7 @@
 #include"UI/IMTransitionWidget.h"
 #include"UI/IMLevelSelectingWidget.h"
 #include"UI/IMESCMenuWidget.h"
+#include"UI/IMLevelFinishWidget.h"
 #include"Blueprint/WidgetBlueprintLibrary.h"
 #include"Debug/MyDebug.h"
 void AIMBaseHUD::Transition_Fadein()
@@ -87,6 +88,19 @@ void AIMBaseHUD::ESCMenu_Close()
 	}
 }
 
+void AIMBaseHUD::LevelFinish_Open()
+{
+	if (HUDMode != EHUDMode::MODE_GAMEPLAY) {
+		return;
+	}
+	if (!LevelFinishWidget) {
+		check(LevelFinishWidgetClass);
+		LevelFinishWidget = CreateWidget<UIMLevelFinishWidget>(GetOwningPlayerController(), LevelFinishWidgetClass);
+	}
+	LevelFinishWidget->AddToViewport();
+	SetInputModeUIOnly(LevelFinishWidget);
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
+}
 void AIMBaseHUD::BeginPlay()
 {
 	Super::BeginPlay();

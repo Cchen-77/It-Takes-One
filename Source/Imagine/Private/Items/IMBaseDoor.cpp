@@ -8,6 +8,8 @@
 #include"PaperZDAnimationComponent.h"
 #include"Player/IMCharacter.h"
 #include"Debug/MyDebug.h"
+#include"Kismet/GameplayStatics.h"
+#include"UI/IMBaseHUD.h"
 AIMBaseDoor::AIMBaseDoor()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -50,7 +52,11 @@ void AIMBaseDoor::PlayerEnter()
 		Sprite->SetFlipbook(FB_DoorEntering);
 		Sprite->Play();
 	}
-	UMyDebug::Message("Enter!");
+	auto PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	check(PC);
+	auto HUD = Cast<AIMBaseHUD>(PC->GetHUD());
+	check(HUD);
+	HUD->LevelFinish_Open();
 }
 
 uint8 AIMBaseDoor::GetDoorID()

@@ -4,7 +4,7 @@
 #include "UI/IMMainMenuWidget.h"
 #include"UI/IMBaseHUD.h"
 #include"Debug/MyDebug.h"
-UIMMainMenuWidget::UIMMainMenuWidget(const FObjectInitializer& ObjInit):Super(ObjInit)
+UIMMainMenuWidget::UIMMainMenuWidget(const FObjectInitializer& ObjInit)
 {
 	bIsFocusable = true;
 }
@@ -13,7 +13,6 @@ void UIMMainMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	PlayAnimation(StartBlink, 0, 0);
-	MyHUD = nullptr;
 }
 
 FReply UIMMainMenuWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)
@@ -25,14 +24,4 @@ FReply UIMMainMenuWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKe
 		return FReply::Handled();
 	}
 	return FReply::Unhandled();
-}
-
-AIMBaseHUD* UIMMainMenuWidget::GetMyHUD()
-{
-	if (!MyHUD) {
-		check(GetOwningPlayer());
-		MyHUD = Cast<AIMBaseHUD>(GetOwningPlayer()->GetHUD());
-		check(MyHUD);
-	}
-	return MyHUD;
 }
